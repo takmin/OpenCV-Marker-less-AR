@@ -1,0 +1,29 @@
+2012/01/07
+Marker less AR is using natural images as markers instead of monochromatic markers.   This program includes object recognition, tracking, and overlay of 3D model functions.
+You can use this program source code under MIT license.
+http://www.opensource.org/licenses/mit-license.php
+
+This program was written in C++ using OpenCV 2.3.1 and GLUT 3.7.6.  You should install these libraries before you compile this source code. 
+
+GLUT
+http://www.opengl.org/resources/libraries/glut/
+
+OpenCV
+https://sourceforge.net/projects/opencvlibrary/
+
+This program also includes "GLMetaseq" which had been developed by Sunao Hashimoto and Keisuke Konishi.
+GLMetaseq is 3D model loader of mqo format.
+
+GLMetaseq
+http://kougaku-navi.net/ARToolKit.html
+
+The Windows demo program "ARengine.exe" includes a 3D models "mikuX.mqo", I obtained these files created by Zusa-san from:
+http://www.opensource.org/licenses/mit-license.php 
+
+This program consists of 3 parts: Object Recognition, Tracking, and Overlay.  You can use Object Recognition function apart from tracking and overlay.
+
+If you are a Windows user, I strongly recommend to begin with demo program.  This demo program is build on Windows 7 (32bit).  You can find how to use it in "HowToUse.pdf".
+This source code is still alpha version and I've not written enough documents yet.  At the current version, the only document "HowToUse.pdf" may be helpful to understand this application.  I will modify and write API documents later.
+
+If you have any question, please contact here:
+Takuya MINAGAWA (z.takmin@gmail.com)
