@@ -18,7 +18,7 @@ GLMetaseq
 http://kougaku-navi.net/ARToolKit.html
 
 The Windows demo program "ARengine.exe" includes a 3D models "mikuX.mqo", I obtained these files created by Zusa-san from:
-http://www.opensource.org/licenses/mit-license.php 
+http://nanoha.kirara.st/3dcg/file/dlrank.php
 
 This program consists of 3 parts: Object Recognition, Tracking, and Overlay.  You can use Object Recognition function apart from tracking and overlay.
 
