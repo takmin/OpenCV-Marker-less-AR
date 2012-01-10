@@ -40,26 +40,44 @@ namespace tracking{
 
 class trackingOBJ
 {
-public:
+protected:
 	trackingOBJ(void);
-	~trackingOBJ(void);
 
 public:
-	cv::Mat prevImg;
-	std::vector<cv::Point2f> corners;	// 追跡点
-	std::vector<cv::Point2f> object_position;	// 四隅の点
-	std::vector<unsigned char> track_status;	// 追跡出来ている点のマスク
-	int max_corners;
-	double quality_level;
-	double min_distance;
-	cv::Mat homographyMat;
+	virtual ~trackingOBJ(void);
+
+	typedef enum{
+		TRACKER_KLT = 1,
+		TRACKER_ORB = 2
+	}TRACKER_TYPE;
 
 public:
-	// pts[0]:Top Left, pts[1]:Bottom Left, pts[2]:Bottom Right, pts[3]:Top Right
-//	static cv::Mat createMask(cv::Size img_size, std::vector<cv::Point2f>& pts);
-	void startTracking(cv::Mat& grayImg, std::vector<cv::Point2f>& pts);	// 入力画像＋オブジェクトの位置
-	bool onTracking(cv::Mat& grayImg);
+	//! create tracking OBJ
+	/*!
+	\param[in] type tracker type
+	\return pointer of tracker
+	*/
+	static trackingOBJ* create(TRACKER_TYPE type);
 
+	//! Start Tracking
+	/*! 
+	\param[in] grayImg first farme in gray scale
+	\param[in] pts initial object position: pts[0]:Top Left, pts[1]:Bottom Left, pts[2]:Bottom Right, pts[3]:Top Right
+	*/
+	virtual void startTracking(const cv::Mat& grayImg, std::vector<cv::Point2f>& pts) = 0;
+
+	//! Continue Tracking
+	/*!
+	\param[in] grayImg input gray scale image
+	\return false if tracking failed
+	*/
+	virtual bool onTracking(const cv::Mat& grayImg) = 0;
+
+	//! Get current obj position
+	/*!
+	\return Homography from previous frame
+	*/
+	virtual cv::Mat& getHomographyMat() = 0;
 };
 
 };

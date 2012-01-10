@@ -61,7 +61,7 @@ using namespace cvar::tracking;
 using namespace cvar::overlay;
 
 controlOR* ctrlOR = 0;	// 特定物体認識クラス
-trackingOBJ trckOBJ;	// オブジェクト追跡クラス
+trackingOBJ* trckOBJ = 0;	// オブジェクト追跡クラス
 viewModel *viewMDL;	// OpenGL画像表示クラス（シングルトン）
 
 VideoCapture capture( 0 );	// カメラキャプチャ
@@ -317,7 +317,7 @@ void displayFunc(void)
 				pose_mat_scale.row(0) *= query_scale;
 				pose_mat_scale.row(1) *= query_scale;
 
-				trckOBJ.startTracking(grayImg, scalePoints(recog_result[0].object_position, (double)query_scale));
+				trckOBJ->startTracking(grayImg, scalePoints(recog_result[0].object_position, (double)query_scale));
 				track_f = viewMDL->setRecogId(recog_result[0].img_id, pose_mat_scale);
 //				trckOBJ.startTracking(grayImg, recog_result[0].object_position);
 //				viewMDL->setRecogId(recog_result[0].img_id, recog_result[0].pose_mat);
@@ -338,7 +338,7 @@ void displayFunc(void)
 		}
 	}
 	else{
-		track_f = trckOBJ.onTracking(grayImg);
+		track_f = trckOBJ->onTracking(grayImg);
 		seq_id++;
 	}
 #endif
@@ -359,7 +359,7 @@ void displayFunc(void)
 #ifndef NO_OVERLAY
 	if(track_f){
 		try{
-			viewMDL->drawObject(trckOBJ.homographyMat, seq_id);
+			viewMDL->drawObject(trckOBJ->getHomographyMat(), seq_id);
 		}
 		catch(std::exception& e){
 			track_f = false;
@@ -438,6 +438,7 @@ void myExit()
 {
 	viewMDL->exitFunc();
 	query_image.release();
+	delete trckOBJ;
 }
 
 
@@ -476,10 +477,11 @@ int startGUI(int argc, char *argv[])
 	glutCreateWindow("Augmented Reality");
 
 	try{
+		trckOBJ = trackingOBJ::create(trackingOBJ::TRACKER_KLT);
 		setARConfig(Size(frame.cols, frame.rows));
 	}
 	catch(std::exception e){
-		exit(-1);
+		throw e;
 	}
 	
 #ifndef NO_OBJRECOG

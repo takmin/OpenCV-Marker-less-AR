@@ -1,4 +1,4 @@
-2012/01/07
+2012/01/10
 Marker less AR is using natural images as markers instead of monochromatic markers.   This program includes object recognition, tracking, and overlay of 3D model functions.
 You can use this program source code under MIT license.
 http://www.opensource.org/licenses/mit-license.php
@@ -18,12 +18,15 @@ GLMetaseq
 http://kougaku-navi.net/ARToolKit.html
 
 The Windows demo program "ARengine.exe" includes a 3D models "mikuX.mqo", I obtained these files created by Zusa-san from:
-http://www.opensource.org/licenses/mit-license.php 
+http://nanoha.kirara.st/3dcg/file/dlrank.php
 
 This program consists of 3 parts: Object Recognition, Tracking, and Overlay.  You can use Object Recognition function apart from tracking and overlay.
 
-If you are a Windows user, I strongly recommend to begin with demo program.  This demo program is build on Windows 7 (32bit).  You can find how to use it in "HowToUse.pdf".
-This source code is still alpha version and I've not written enough documents yet.  At the current version, the only document "HowToUse.pdf" may be helpful to understand this application.  I will modify and write API documents later.
+If you are a Windows user, I strongly recommend to begin with demo program.  This demo program is build on Windows 7 (32bit).  You can find how to use it in "HowToUse.pdf" in WinDemo.zip.
+This source code is still alpha version and I've not written enough documents yet.  
+This code is still on the way of refactoring, so API interface design will be changed later.  I will write API documents after refactoring.
+At the current version, the only document "HowToUse.pdf" may be helpful to understand this application.
 
 If you have any question, please contact here:
 Takuya MINAGAWA (z.takmin@gmail.com)
+
