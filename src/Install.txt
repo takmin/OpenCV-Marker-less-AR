@@ -1,0 +1,47 @@
+This is very short introduction how to build source code of OpenCV Marker less AR
+
+1. Install OpenCV
+Please install OpenCV 2.3 or later.
+You can download it from this site.  
+https://sourceforge.net/projects/opencvlibrary/
+
+To install it, please follow the instruction of this site.
+http://opencv.willowgarage.com/wiki/InstallGuide
+
+2. Install GLUT
+Please install GLUT 3.7.6 or later.
+You can download it from this site.  
+http://www.opengl.org/resources/libraries/glut/
+
+
+3. Install libpng and zlib
+To use GLMetaseq, you need these libraries. If you build OpenCV from source code, you can find these libraries in OpenCV.
+
+
+4. Create new project
+Please create new project of your IDE and import all source files of OpenCV Marker less AR
+
+
+5. Add include directory path to your project
+You need to add include path of each libarary to your project.
+For example, OpenCV2.3.1 include path on Windows is usually:
+C:\OpenCV2.3.1\include
+
+If you use Visual C++, you can specify its path at
+Property of Project -> C/C++ -> General -> Additional include Directories:
+
+
+6. Link libraries
+You need to link each libraries to your project.
+About OpenCV, you need the following lib files.
+- opencv_core
+- opencv_imgproc
+- opencv_highgui
+- opencv_calib3d
+- opencv_video231
+- opencv_features2d
+
+If you use Visual C++, you can specify the libraries to link at
+Property of Project -> Linker -> General -> Additional library Directories: 
+Property of Project -> Linker -> Input -> Additonal Dependencies (debug):
+Property of Project -> Linker -> Input -> Additonal Dependencies (release):
