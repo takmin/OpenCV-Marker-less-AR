@@ -31,6 +31,7 @@
 //
 //M*/
 #include "controlOR.h"
+#include <opencv2/nonfree/nonfree.hpp>
 #include <sstream>
 
 using namespace std;
@@ -340,6 +341,7 @@ int controlOR::initializeFeatureDetector()
 //	SURF* surf_pt = new SURF(500,4,2,true);
 //	featureDetector = surf_pt;
 //	feature_dimention = 128;
+	cv::initModule_nonfree();
 	feature_detector = FeatureDetector::create(detectorType);	// create feature detector
 	descriptor_extractor = DescriptorExtractor::create(descriptorType);	// create descriptor extractor
 
@@ -349,7 +351,7 @@ int controlOR::initializeFeatureDetector()
 //int controlOR::extractFeatures(const Mat& src_img, vector<KeyPoint>& kpt, vector<float>& descriptor)
 int controlOR::extractFeatures(const cv::Mat& src_img, cv::vector<cv::KeyPoint>& kpt, cv::Mat& descriptor) const
 {
-	// extract surf
+	// extract freak
 	try{
 		// keypoints detection from a query image
 		feature_detector->detect(src_img, kpt);
