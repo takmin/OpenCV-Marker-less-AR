@@ -28,39 +28,22 @@ THE SOFTWARE.
 
 
 GLMetaseq
-MITライセンス
+MIT License
 Copyright (c) 2009 Sunao Hashimoto and Keisuke Konishi
-
-以下に定める条件に従い、本ソフトウェアおよび関連文書のファイル（以下「ソフト
-ウェア」）の複製を取得するすべての人に対し、ソフトウェアを無制限に扱うことを
-無償で許可します。これには、ソフトウェアの複製を使用、複写、変更、結合、掲載、
-頒布、サブライセンス、および/または販売する権利、およびソフトウェアを提供する
-相手に同じことを許可する権利も無制限に含まれます。 
-
-上記の著作権表示および本許諾表示を、ソフトウェアのすべての複製または重要な部分
-に記載するものとします。 
-
-ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証
-もなく提供されます。ここでいう保証とは、商品性、特定の目的への適合性、および
-権利非侵害についての保証も含みますが、それに限定されるものではありません。 
-作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフト
-ウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いに
-よって生じる一切の請求、損害、その他の義務について何らの責任も負わないもの
-とします。 
 
 */
 
 /*=========================================================================
-【このソース内でのみ有効なグローバル変数】
+[Global variable valid only within this source]
 =========================================================================*/
 
-static TEXTURE_POOL l_texPool[MAX_TEXTURE];		// テクスチャプール
-static int			l_texPoolnum;				// テクスチャの数
-static int			l_GLMetaseqInitialized = 0;	// 初期化フラグ
+static TEXTURE_POOL l_texPool[MAX_TEXTURE];		// Texture pool
+static int			l_texPoolnum;				// Number of texture
+static int			l_GLMetaseqInitialized = 0;	// Initialization flag
 
 
 /*=========================================================================
-【関数宣言】
+[Function declaration]
 =========================================================================*/
 
 #ifdef __cplusplus
@@ -106,13 +89,13 @@ void mqoMakeObjectsEx(MQO_OBJECT *mqoobj, MQO_OBJDATA obj[], int n_obj, MQO_MATD
 
 
 /*=========================================================================
-【関数】endianConverter
-【用途】エンディアン変換
-【引数】
-		addr	アドレス
-		size	サイズ
+[Function] endianConverter
+[Applications] endian conversion
+[Argument]
+		addr	Address
+		size	Size
 
-【戻値】なし
+[Return value] None
 =========================================================================*/
 
 void endianConverter(void *addr,unsigned int size)
@@ -129,12 +112,12 @@ void endianConverter(void *addr,unsigned int size)
 
 
 /*=========================================================================
-【関数】TGAHeaderEndianConverter
-【用途】TGAのヘッダのエンディアン変換
-【引数】
-		tgah	TGAのヘッダ
+[Function] TGAHeaderEndianConverter
+[Applications]TGA of the header of endian conversion
+[Argument]
+		tgah	TGA header of
 
-【戻値】なし
+[Return value] None
 =========================================================================*/
 
 void TGAHeaderEndianConverter(	STR_TGA_HEAD *tgah )
@@ -148,12 +131,12 @@ void TGAHeaderEndianConverter(	STR_TGA_HEAD *tgah )
 
 
 /*=========================================================================
-【関数】IsExtensionSupported
-【用途】OpenGLの拡張機能がサポートされているかどうか調べる
-【引数】
-		szTargetExtension	拡張機能の名前
+[Function]IsExtensionSupported
+[Applications]Examine whether the extension of OpenGL is supported
+[Argument]
+		szTargetExtension	Name of the extension
 
-【戻値】1：サポートされている，0：されていない
+[Return value] 1: are supported, 0: that is not
 =========================================================================*/
 
 int IsExtensionSupported( char* szTargetExtension )
@@ -162,15 +145,15 @@ int IsExtensionSupported( char* szTargetExtension )
 	const unsigned char *pszStart;
 	unsigned char *pszWhere, *pszTerminator;
 
-	// Extension の名前が正しいか調べる(NULLや空白はNG）
+	// Extension To investigate if the name is correct (NULL or blank NG)
 	pszWhere = (unsigned char *) strchr( szTargetExtension, ' ' );
 	if ( pszWhere || *szTargetExtension == (char)NULL )
 		return 0;
 
-	// Extension の文字列を所得する
+	// Extension I income of string
 	pszExtensions = glGetString( GL_EXTENSIONS );
 
-	// 文字列の中に必要な extension があるか調べる
+	// Find out if there is extension necessary in a string
 	pszStart = pszExtensions;
 	for (;;)
 	{
@@ -188,19 +171,19 @@ int IsExtensionSupported( char* szTargetExtension )
 
 
 /*=========================================================================
-【関数】mqoInit
-【用途】メタセコイアローダの初期化
-【引数】なし
-【戻値】なし
+[Function]mqoInit
+[Applications]Initialization of Metasequoia loader
+[Argument] No
+[Return value] None
 =========================================================================*/
 
 void mqoInit(void)
 {
-	// テクスチャプール初期化
+	// Texture pool initialization
 	memset(l_texPool,0,sizeof(l_texPool));
 	l_texPoolnum = 0;
 
-	// 頂点バッファのサポートのチェック
+	// Check the vertex buffer of support
 	g_isVBOSupported = IsExtensionSupported("GL_ARB_vertex_buffer_object");
 //	g_isVBOSupported = 0;
 
@@ -211,8 +194,8 @@ void mqoInit(void)
 	glDeleteBuffersARB = NULL;
 
 	if ( g_isVBOSupported ) {
-		// printf("OpenGL : 頂点バッファをサポートしているので使用します\n");
-		// GL 関数のポインタを所得する
+		// printf("OpenGL : It is used because it supports the vertex buffer\n");
+		// I income pointers GL function
 		glGenBuffersARB = (PFNGLGENBUFFERSARBPROC) wglGetProcAddress("glGenBuffersARB");
 		glBindBufferARB = (PFNGLBINDBUFFERARBPROC) wglGetProcAddress("glBindBufferARB");
 		glBufferDataARB = (PFNGLBUFFERDATAARBPROC) wglGetProcAddress("glBufferDataARB");
@@ -220,35 +203,35 @@ void mqoInit(void)
 	}
 #endif
 
-	// 初期化フラグ
+	// Initialization flag
 	l_GLMetaseqInitialized = 1;
 }
 
 
 /*=========================================================================
-【関数】mqoCleanup
-【用途】メタセコイアローダの終了処理
-【引数】なし
-【戻値】なし
+[Function]mqoCleanup
+[Applications]End processing of Metasequoia loader
+[Argument]None
+[Return value] None
 =========================================================================*/
 
 void mqoCleanup(void)
 {
-	mqoClearTexturePool();	// テクスチャプールのクリア
+	mqoClearTexturePool();	// Clear texture pool
 }
 
 
 /*=========================================================================
-【関数】mqoSetTexturePool
-【用途】テクスチャプールにテクスチャを読み込む
-【引数】
-		texfile		テクスチャファイル名
-		alpfile		アルファファイル名
-		alpha		アルファ
+[Function]mqoSetTexturePool
+[Applications]Read a texture to texture pool
+[Argument]
+		texfile		Texture file name
+		alpfile		Alpha file name
+		alpha		Alpha
 
-【戻値】テクスチャID
-【仕様】テクスチャがまだ読み込まれていなければ読み込み，テクスチャ登録
-		すでに読み込まれていれば登録したものを返す.
+[Return value] texture ID
+[Specification] texture read if it has not already been loaded, texture registration
+It returns those registered if already loaded.
 =========================================================================*/
 
 GLuint mqoSetTexturePool(char *texfile, char *alpfile, unsigned char alpha ) 
@@ -272,11 +255,11 @@ GLuint mqoSetTexturePool(char *texfile, char *alpfile, unsigned char alpha )
 		}
 		break;
 	}
-	if ( pos < l_texPoolnum ) { //すでに読み込み済み
+	if ( pos < l_texPoolnum ) { //Already Loaded
 		return  l_texPool[pos].texture_id;
 	}
 	if ( MAX_TEXTURE <= pos ) {
-		printf("%s:mqoSetTexturePool テクスチャ読み込み領域不足\n",__FILE__);
+		printf("%s:mqoSetTexturePool Texture read out of space\n",__FILE__);
 		return -1;
 	}
 	image = mqoLoadTextureEx(texfile,alpfile,&l_texPool[pos].texsize,alpha);
@@ -290,8 +273,8 @@ GLuint mqoSetTexturePool(char *texfile, char *alpfile, unsigned char alpha )
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT,4);
 	glPixelStorei(GL_PACK_ALIGNMENT,4);
-	glGenTextures(1,&l_texPool[pos].texture_id);			// テクスチャを生成
-	glBindTexture(GL_TEXTURE_2D,l_texPool[pos].texture_id);	// テクスチャの割り当て
+	glGenTextures(1,&l_texPool[pos].texture_id);			// Generate texture
+	glBindTexture(GL_TEXTURE_2D,l_texPool[pos].texture_id);	// Assignment of texture
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -299,26 +282,26 @@ GLuint mqoSetTexturePool(char *texfile, char *alpfile, unsigned char alpha )
 					0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	l_texPoolnum = pos+1;
 
-	//登録すれば、読み込んだバッファは不要
+	//If you register, the read buffer is unnecessary
 	free(image);
-	glBindTexture(GL_TEXTURE_2D,0);	// デフォルトテクスチャの割り当て
+	glBindTexture(GL_TEXTURE_2D,0);	// Assignment of default texture
 
 	return l_texPool[pos].texture_id;
 }
 
 
 /*=========================================================================
-【関数】mqoClearTexturePool()
-【用途】テクスチャプールの開放
-【引数】なし
-【戻値】なし
+[Function]mqoClearTexturePool()
+[Applications]テクスチャプールの開放
+[Argument]None
+[Return value] None
 =========================================================================*/
 
 void mqoClearTexturePool()
 {
 	int pos;
 	for ( pos = 0; pos < l_texPoolnum; pos++ ) {
-		glDeleteTextures(1, &l_texPool[pos].texture_id);	// テクスチャ情報を削除
+		glDeleteTextures(1, &l_texPool[pos].texture_id);	// Remove texture information
 	}
 
 	memset(l_texPool,0,sizeof(l_texPool));
@@ -327,17 +310,17 @@ void mqoClearTexturePool()
 
 
 /*=========================================================================
-【関数】mqoLoadTextureEx
-【用途】ファイルからテクスチャ画像を作成する
-【引数】
-		texfile		ファイル名
-		alpfile		アルファファイル名
-		tex_size	テクスチャのサイズ（一辺の長さ）を返す
+[Function] mqoLoadTextureEx
+To create a texture image from the [Applications] file
+[Argument]
+texfile file name
+alpfile alpha file name
+Return the tex_size size of the texture (the length of one side)
 
-【戻値】テクスチャ画像へのポインタ（失敗時はNULL）
-【仕様】24bitビットマップ，および8,24,32bitＴＧＡ
-		サイズは「一辺が2のn乗の正方形」に限定
-		libjpeg,libpng（外部ライブラリ）が有ればJPEG,PNGの読み込み可能
+[Return value] pointer to the texture image (failure is NULL)
+[Specification] 24bit bitmap, and 8,24,32bitTGA
+Size is limited to "one side 2 of the n-th power of the square"
+libjpeg, libpng (external library) if there is JPEG, PNG of readable
 =========================================================================*/
 
 GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned char alpha)
@@ -384,7 +367,7 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 	pngimage = NULL;
 #endif
 	size = - 1;
-	for ( fl = 0; fl < 2; fl++ ) {//テクスチャ＝fl=0    アルファ＝fl=1
+	for ( fl = 0; fl < 2; fl++ ) {//Texture = fl = 0 α = fl = 1
 		if ( filename[fl] == NULL ) continue;
 		namelen = strlen(filename[fl]);
 		ext[0] = tolower(filename[fl][namelen-3]);
@@ -401,18 +384,18 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 			filename[fl][namelen-1] = 'p';
 		}
 		/* */
-		if ( fl == 1 ) { //アルファの読み込みはＴＧＡorＰＮＧ
+		if ( fl == 1 ) { //Reading of alpha TGAorPNG
 			if ( ! (isTGA || isPNG) ) {
-				printf("アルファのファイルに対応できない→%s\n",filename[fl]);
+				printf("It is not possible to correspond to alpha of file %s\n",filename[fl]);
 				break;
 			}
 		}
 		if ( fp != NULL ) fclose(fp);
 		if ( (fp=fopen(filename[fl],"rb"))==NULL ) {
-			printf("%s:テクスチャ読み込みエラー[%s]\n",__FILE__,filename[fl]);
+			printf("%s:Texture read error[%s]\n",__FILE__,filename[fl]);
 			continue;
 		}
-		// ヘッダのロード
+		// Header of load
 		if ( isTGA ) {
 			fread(&tgah,sizeof(STR_TGA_HEAD),1,fp);
 #if DEF_IS_LITTLE_ENDIAN
@@ -425,22 +408,22 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 #if DEF_USE_LIBJPEG
 			unsigned int i;
 			cinfo.err = jpeg_std_error( &jerr );
-			jpeg_create_decompress( &cinfo );	//解凍用情報作成
-			jpeg_stdio_src( &cinfo, fp );		//読み込みファイル指定
-			jpeg_read_header( &cinfo, TRUE );	//jpegヘッダ読み込み
-			jpeg_start_decompress( &cinfo );	//解凍開始
+			jpeg_create_decompress( &cinfo );	//Generation information thaw
+			jpeg_stdio_src( &cinfo, fp );		//Read file specification
+			jpeg_read_header( &cinfo, TRUE );	//jpeg header read
+			jpeg_start_decompress( &cinfo );	//Thawing start
 
 			if ( cinfo.out_color_components == 3 && cinfo.out_color_space == JCS_RGB ) {
 				if ( jpegimage != NULL ) {
-					for (i = 0; i < cinfo.output_height; i++) free(jpegimage[i]);            // 以下２行は２次元配列を解放します
+					for (i = 0; i < cinfo.output_height; i++) free(jpegimage[i]);            // Two lines will release a two-dimensional array or less
 					free(jpegimage);
 				}
-				//読み込みデータ配列の作成
+				//Creating a read data array
 				jpegimage = (JSAMPARRAY)malloc( sizeof( JSAMPROW ) * cinfo.output_height );
 				for ( i = 0; i < cinfo.output_height; i++ ) {
 					jpegimage[i] = (JSAMPROW)malloc( sizeof( JSAMPLE ) * cinfo.out_color_components * cinfo.output_width );
 				}
-				//解凍データ読み込み
+				//Decompress data read
 				while( cinfo.output_scanline < cinfo.output_height ) {
 					jpeg_read_scanlines( &cinfo,
 						jpegimage + cinfo.output_scanline,
@@ -450,13 +433,13 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 				size = width[fl] = cinfo.output_width;
 			}
 
-			jpeg_finish_decompress( &cinfo );	//解凍終了
-			jpeg_destroy_decompress( &cinfo );	//解凍用情報解放
+			jpeg_finish_decompress( &cinfo );	//Thawing end
+			jpeg_destroy_decompress( &cinfo );	//Decompression information release
 			if ( !(cinfo.out_color_components == 3 && cinfo.out_color_space == JCS_RGB) ) {
-				printf("JPEG 対応できないフォーマット→%s\n",filename[fl]);
+				printf("The JPEG support can not format %s\n",filename[fl]);
 			}
 #else
-			printf("このテクスチャは対応できないフォーマット→%s\n",filename[fl]);
+			printf("Format This texture can not cope %s\n",filename[fl]);
 			continue;
 #endif
 		}
@@ -467,37 +450,37 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 			int             bit_depth, interlace_type;
 			unsigned int             i;
 			int j,k;
-			png_ptr = png_create_read_struct(                       // png_ptr構造体を確保・初期化します
+			png_ptr = png_create_read_struct(                       // It will ensure and initialize the png_ptr structure
 							PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-			info_ptr = png_create_info_struct(png_ptr);             // info_ptr構造体を確保・初期化します
-			png_init_io(png_ptr, fp);                               // libpngにfpを知らせます
-			png_read_info(png_ptr, info_ptr);                       // PNGファイルのヘッダを読み込みます
-			png_get_IHDR(png_ptr, info_ptr, &pngwidth, &pngheight,        // IHDRチャンク情報を取得します
+			info_ptr = png_create_info_struct(png_ptr);             // It will ensure and initialize the info_ptr structure
+			png_init_io(png_ptr, fp);                               // It will inform the fp in libpng
+			png_read_info(png_ptr, info_ptr);                       // It will read the header of PNG files
+			png_get_IHDR(png_ptr, info_ptr, &pngwidth, &pngheight,        // Get IHDR chunk information
 							&bit_depth, &color_type, &interlace_type,
 							&j,&k);
 			if ( pngimage != NULL ) {
-				for (i = 0; i < pngheight; i++) free(pngimage[i]);            // 以下２行は２次元配列を解放します
+				for (i = 0; i < pngheight; i++) free(pngimage[i]);            // Two lines will release a two-dimensional array or less
 				free(pngimage);
 			}
-			pngimage = (png_bytepp)malloc(pngheight * sizeof(png_bytep)); // 以下３行は２次元配列を確保します
+			pngimage = (png_bytepp)malloc(pngheight * sizeof(png_bytep)); // The following three lines to ensure a two-dimensional array
 			i = png_get_rowbytes(png_ptr, info_ptr);
 			pngdepth = i / pngwidth;
 			for (i = 0; i < pngheight; i++)
 					pngimage[i] = (png_bytep)malloc(png_get_rowbytes(png_ptr, info_ptr));
-			png_read_image(png_ptr, pngimage);                         // 画像データを読み込みます
+			png_read_image(png_ptr, pngimage);                         // It will read the image data
 
-			png_destroy_read_struct(                                // ２つの構造体のメモリを解放します
+			png_destroy_read_struct(                                // It will release two of the memory of structure
 	        &png_ptr, &info_ptr, (png_infopp)NULL);
 			size = width[fl] = pngwidth;
 #else
-			printf("このテクスチャは対応できないフォーマット→%s\n",filename[fl]);
+			printf("Format This texture can not cope %s\n",filename[fl]);
 			continue;
 #endif
 		}
-		if ( width[fl] == -1 ) {//ココまできてサイズが指定されていない　＝　ビットマップ
-			fseek(fp,14+4,SEEK_SET);		// 画像幅が格納されている位置までシーク
-			fread(&size,sizeof(int),1,fp);	// BiWidthの情報だけ取得
-			fseek(fp,14+40,SEEK_SET);		// 画素データが格納されている位置までシーク
+		if ( width[fl] == -1 ) {//Size come up here is not specified = bitmap
+			fseek(fp,14+4,SEEK_SET);		// Seek to a position where the image width is stored
+			fread(&size,sizeof(int),1,fp);	// Acquisition only BiWidth of information
+			fseek(fp,14+40,SEEK_SET);		// Seek to the position where the pixel data is stored
 #if DEF_IS_LITTLE_ENDIAN
 #else
 			endianConverter(&size,sizeof(int));
@@ -511,7 +494,7 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 				break;
 			}
 		}
-		if ( fl == 1 && isTGA ) { //アルファの読み込みはＴＧＡの８ビットモノクロｏｒ３２ビットフル
+		if ( fl == 1 && isTGA ) { //8-bit monochrome or32-bit full of reading of alpha TGA
 			if ( !(
 				(tgah.depth == 8 && tgah.type == DEF_TGA_TYPE_MONO) ||
 				(tgah.depth == 32 && tgah.type == DEF_TGA_TYPE_FULL) 
@@ -519,7 +502,7 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 				break;
 			}
 		}
-		if ( fl == 1 && isPNG ) { //アルファの読み込みはＰＮＧのトゥルーカラー＋アルファｏｒグレースケール＋アルファ
+		if ( fl == 1 && isPNG ) { //Reading of alpha PNG of true color + alpha or gray scale + alpha
 #if DEF_USE_LIBPNG
 			if ( !(
 				(color_type== 6 ) ||
@@ -530,7 +513,7 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 #endif
 		}
 
-		// メモリの確保
+		// Secure memory
 		if ( pImage == NULL ) {
 			pImage = (GLubyte*)malloc(sizeof(unsigned char)*size*size*4);
 		}
@@ -577,17 +560,17 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 				else {
 					if ( isPNG ) {
 #if DEF_USE_LIBPNG
-						if ( color_type == 6 ) { //トゥルーカラー＋アルファ
+						if ( color_type == 6 ) { //True color + alpha
 							pRead[3]= pngimage[size-1-y][x*pngdepth+3];
 						}
-						if ( color_type == 4 ) { //グレースケール＋アルファ
+						if ( color_type == 4 ) { //Gray scale + alpha
 							pRead[3]= pngimage[size-1-y][x*pngdepth+1];
 						}
 						if ( alpha < pRead[3] ) pRead[3] = alpha;
 #endif
 					}
 					if ( isTGA ) {
-						if ( tgah.depth == 32 ) { //いらないデータを読み飛ばす
+						if ( tgah.depth == 32 ) { //To skip the data you do not need
 							fread(wbuf,3,1,fp);	// BGR
 						}
 						fread(&pRead[3],1,1,fp);	// A
@@ -607,14 +590,14 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 #if DEF_USE_LIBPNG
 	if ( pngimage != NULL ) {
 		unsigned int uy;
-		for (uy = 0; uy < pngheight; uy++) free(pngimage[uy]);            // 以下２行は２次元配列を解放します
+		for (uy = 0; uy < pngheight; uy++) free(pngimage[uy]);            // Two lines will release a two-dimensional array or less
 		free(pngimage);
 	}
 #endif
 #if DEF_USE_LIBJPEG
 	if ( jpegimage != NULL ) {
 		unsigned int uy;
-		for (uy = 0; uy < cinfo.output_height; uy++) free(jpegimage[uy]);            // 以下２行は２次元配列を解放します
+		for (uy = 0; uy < cinfo.output_height; uy++) free(jpegimage[uy]);            // Two lines will release a two-dimensional array or less
 		free(jpegimage);
 	}
 #endif
@@ -629,15 +612,15 @@ GLubyte* mqoLoadTextureEx(char *texfile,char *alpfile,int *tex_size,unsigned cha
 
 
 /*=========================================================================
-【関数】mqoLoadFile
-【用途】メタセコイアファイル(*.mqo)からデータを読み込む
-【引数】
-		mqoobj		MQOオブジェクト
-		filename	ファイルのパス
-		scale		拡大率
-		alpha		アルファ
+[Function] mqoLoadFile
+It reads the data from the [Applications] Metasequoia file (* .mqo)
+[Argument]
+mqoobj MQO object
+The path of the file filename
+scale enlargement factor
+alpha alpha
 
-【戻値】成功：1 ／ 失敗：0
+[Return value] Success: 1 / Failure: 0
 =========================================================================*/
 
 int mqoLoadFile( MQO_OBJECT *mqoobj, char *filename, double scale, unsigned char alpha)
@@ -646,15 +629,15 @@ int mqoLoadFile( MQO_OBJECT *mqoobj, char *filename, double scale, unsigned char
 	MQO_OBJDATA		obj[MAX_OBJECT];
 	MQO_MATDATA		*M = NULL;
 
-	char	buf[SIZE_STR];		// 文字列読み込みバッファ
-	char	path_dir[SIZE_STR];	// ディレクトリのパス
-	char	path_tex[SIZE_STR];	// テクスチャファイルのパス
-	char	path_alp[SIZE_STR];	// アルファテクスチャファイルのパス
-	int		n_mat = 0;			// マテリアル数
-	int		n_obj = 0;			// オブジェクト数
+	char	buf[SIZE_STR];		// String read buffer
+	char	path_dir[SIZE_STR];	// Directory path
+	char	path_tex[SIZE_STR];	// The path of the texture file
+	char	path_alp[SIZE_STR];	// The path of the alpha texture file
+	int		n_mat = 0;			// Number of Materials
+	int		n_obj = 0;			// The number of objects
 	int		i;
 
-	// MaterialとObjectの読み込み
+	// Reading of Material and Object
 	fp = fopen(filename,"rb");
 	if (fp==NULL) return 0;
 
@@ -682,24 +665,24 @@ int mqoLoadFile( MQO_OBJECT *mqoobj, char *filename, double scale, unsigned char
 	n_obj = i;
 	fclose(fp);
 
-	// パスの取得
+	// Acquisition of path
 	mqoGetDirectory(filename, path_dir);
 
-	// テクスチャの登録
+	// Registration of texture
 	for (i=0; i<n_mat; i++) {
 		if (M[i].useTex) {
 
 			if (strstr(M[i].texFile,":")) {
-				strcpy(path_tex, M[i].texFile);	// 絶対パスの場合
+				strcpy(path_tex, M[i].texFile);	// In the case of an absolute path
 			} else {
-				sprintf(path_tex,"%s%s",path_dir,M[i].texFile);	// 相対パスの場合
+				sprintf(path_tex,"%s%s",path_dir,M[i].texFile);	// In the case of a relative path
 			}
 
 			if ( M[i].alpFile[0] != (char)0 ) {
 				if (strstr(M[i].texFile,":")) {
-					strcpy(path_alp, M[i].alpFile);	// 絶対パスの場合
+					strcpy(path_alp, M[i].alpFile);	// In the case of an absolute path
 				} else {
-					sprintf(path_alp,"%s%s",path_dir,M[i].alpFile);	// 相対パスの場合
+					sprintf(path_alp,"%s%s",path_dir,M[i].alpFile);	// In the case of a relative path
 				}
 				M[i].texName = mqoSetTexturePool(path_tex,path_alp,alpha);
 			}
@@ -711,13 +694,13 @@ int mqoLoadFile( MQO_OBJECT *mqoobj, char *filename, double scale, unsigned char
 
 	mqoMakeObjectsEx( mqoobj, obj, n_obj, M, n_mat, scale, alpha );
 
-	// オブジェクトのデータの開放
+	// The opening of the object of data
 	for (i=0; i<n_obj; i++) {
 		free(obj[i].V);
 		free(obj[i].F);
 	}
 
-	// マテリアルの開放
+	// The opening of the material
 	free(M);
 
 	return 1;
@@ -725,21 +708,21 @@ int mqoLoadFile( MQO_OBJECT *mqoobj, char *filename, double scale, unsigned char
 
 
 /*=========================================================================
-【関数】mqoCreateList
-【用途】MQOオブジェクトを指定数確保する
-【引数】num		MQOオブジェクトの数
+[Function] mqoCreateList
+You want to specify the number of securing the [Applications] MQO object
+[Argument] num MQO number of objects
 
-【戻値】MQOオブジェクト
+[Return value] MQO object
 =========================================================================*/
 
 MQO_OBJECT* mqoCreateList(int num)
 {
 	MQO_OBJECT *obj;
 
-	// 初期化されてなかったら初期化
+	// Initialization I had not been initialized
 	if ( ! l_GLMetaseqInitialized ) mqoInit();
 
-	// 領域確保と初期化
+	// Area secure and initialization
 	obj = (MQO_OBJECT *)malloc(sizeof(MQO_OBJECT)*num);
 	memset(obj, 0, sizeof(MQO_OBJECT)*num);
 
@@ -748,16 +731,16 @@ MQO_OBJECT* mqoCreateList(int num)
 
 
 /*=========================================================================
-【関数】mqoCreateListObject
-【用途】メタセコイアファイル(*.mqo)からMQOオブジェクト配列を作成する
+[Function] mqoCreateListObject
+Create a MQO object array from the [Applications] Metasequoia file (* .mqo)
 
-【引数】mqoobj		MQOオブジェクト
-		i			読み込み先番号（i番目にMQOファイルを読み込む）
-		filename	ファイルのパス
-		scale		拡大率
-		alpha		アルファ指定（全体のアルファ値を指定（0～255））
+[Argument] mqoobj MQO object
+i read destination number (i th I read the MQO file)
+The path of the file filename
+scale enlargement factor
+alpha alpha specification (specify the overall alpha value (0-255))
 
-【戻値】ステータス　負：異常　０：正常
+[Return value] Status negative: Abnormal 0: Normal
 =========================================================================*/
 
 int mqoCreateListObject(MQO_OBJECT *mqoobj, int i, char *filename, double scale, unsigned char alpha )
@@ -771,13 +754,13 @@ int mqoCreateListObject(MQO_OBJECT *mqoobj, int i, char *filename, double scale,
 
 
 /*=========================================================================
-【関数】mqoCallListObject
-【用途】MQOオブジェクトをOpenGLの画面上に呼び出す
-【引数】
-		mqoobj		MQOオブジェクト配列
-		num			配列番号 (0～）
+[Function] mqoCallListObject
+I call [Applications] the MQO object on the screen of the OpenGL
+[Argument]
+mqoobj MQO object array
+num sequence number (0 ~)
 
-【戻値】なし
+[Return value] None
 =========================================================================*/
 
 void mqoCallListObject(MQO_OBJECT mqoobj[],int num)
@@ -799,23 +782,23 @@ void mqoCallListObject(MQO_OBJECT mqoobj[],int num)
 	if ( mqoobj == NULL) return;
 
 	glPushMatrix();
-		//メタセコは頂点の並びが表面からみて右回り
+		//Metaseko is right around the sequence of vertices is viewed from the surface
 		glGetIntegerv(GL_FRONT_FACE,&intFrontFace);
 		glFrontFace(GL_CW);
 		dalpha = (double)mqoobj[num].alpha/(double)255;
 
-		for ( o=0; o<mqoobj[num].objnum; o++ ) {	// 内部オブジェクトループ
+		for ( o=0; o<mqoobj[num].objnum; o++ ) {	// Internal object loop
 
 			obj = &mqoobj[num].obj[o];
 			if ( ! obj->isVisible ) continue;
 			glShadeModel(((obj->isShadingFlat))?GL_FLAT:GL_SMOOTH);
 
-			for ( m = 0; m < obj->matnum; m++ ) {	//マテリアルループ
+			for ( m = 0; m < obj->matnum; m++ ) {	//Materials loop
 
 				mat = &obj->mat[m];
 				if ( mat->datanum == 0 ) continue;
 
-				if ( mat->isValidMaterialInfo ) {	// マテリアルの情報設定
+				if ( mat->isValidMaterialInfo ) {	// Information setting of material
 					memcpy(matenv,mat->dif,sizeof(matenv));
 					matenv[3] *= dalpha;
 					glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, matenv);
@@ -831,7 +814,7 @@ void mqoCallListObject(MQO_OBJECT mqoobj[],int num)
 					glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat->power);
 				}
 
-				if ( mat->isUseTexture) {	// テクスチャがある場合
+				if ( mat->isUseTexture) {	// If there is a texture
 					glEnableClientState( GL_VERTEX_ARRAY );
 					glEnableClientState( GL_NORMAL_ARRAY );
 					glEnableClientState( GL_TEXTURE_COORD_ARRAY );
@@ -847,46 +830,46 @@ void mqoCallListObject(MQO_OBJECT mqoobj[],int num)
 
 					glBindTexture(GL_TEXTURE_2D,mat->texture_id);
 
-					if ( g_isVBOSupported ) {	// 頂点バッファ使用
-						base = (char *)NULL;	// アドレスはNULLが先頭
-						glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id ); // 頂点バッファを結びつける
+					if ( g_isVBOSupported ) {	// Vertex buffer usage
+						base = (char *)NULL;	// Address top NULL
+						glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id ); // Tie the vertex buffer
 					}
 					else {
-						// 頂点配列の時は、アドレスをそのまま入れる
+						// When the vertex array, put the address as it is
 						base = (char *)mat->vertex_t[0].point;
 					}
 
-					// 頂点配列を設定
+					// Set the vertex array
 					offset = (int)( (char *)mat->vertex_t[0].point - (char *)mat->vertex_t[0].point );
 					glVertexPointer( 3, GL_FLOAT, sizeof(VERTEX_TEXUSE) , base + offset );
 
-					// テクスチャ座標配列を設定
+					// Set the texture coordinate array
 					offset = (int)((char *)mat->vertex_t[0].uv-(char *)mat->vertex_t[0].point);
 					glTexCoordPointer( 2, GL_FLOAT, sizeof(VERTEX_TEXUSE) , base + offset );
 
-					// 法線配列を設定
+					// Set the normal array
 					offset = (int)((char *)mat->vertex_t[0].normal-(char *)mat->vertex_t[0].point);
 					glNormalPointer( GL_FLOAT, sizeof(VERTEX_TEXUSE) , base+offset );
 
-					// 色設定
+					// Color setting
 					glColor4f(mat->color[0],mat->color[1],mat->color[2],mat->color[3]);
 
-					// 描画実行
+					// Execution drawing
 					glDrawArrays( GL_TRIANGLES, 0, mat->datanum );
 
 					glBindTexture(GL_TEXTURE_2D,bindGL_TEXTURE_2D);
 					if( isGL_BLEND == GL_FALSE ) glDisable(GL_BLEND);
 					if( isGL_TEXTURE_2D == GL_FALSE ) glDisable(GL_TEXTURE_2D);
 
-					if ( g_isVBOSupported ) {						// 頂点バッファ使用
-						glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// 頂点バッファをデフォルトへ
+					if ( g_isVBOSupported ) {						// Vertex buffer usage
+						glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// The vertex buffer to the default
 					}
 
 					glDisableClientState( GL_VERTEX_ARRAY );
 					glDisableClientState( GL_NORMAL_ARRAY );
 					glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 				}
-				else {	// テクスチャがない場合
+				else {	// If there is no texture
 
 					glEnableClientState( GL_VERTEX_ARRAY );
 					glEnableClientState( GL_NORMAL_ARRAY );
@@ -896,7 +879,7 @@ void mqoCallListObject(MQO_OBJECT mqoobj[],int num)
 					glEnable(GL_BLEND);
 					glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-					if ( g_isVBOSupported ) {	// 頂点バッファ使用
+					if ( g_isVBOSupported ) {	// Vertex buffer usage
 						base = (char *)NULL;
 						glBindBufferARB( GL_ARRAY_BUFFER_ARB, mat->VBO_id );
 					}
@@ -904,25 +887,25 @@ void mqoCallListObject(MQO_OBJECT mqoobj[],int num)
 						base = (char *)mat->vertex_p[0].point;
 					}
 
-					// 頂点配列を設定
+					// Set the vertex array
 					offset = (int)((char *)mat->vertex_p[0].point-(char *)mat->vertex_p[0].point);
 					glVertexPointer( 3, GL_FLOAT, sizeof(VERTEX_NOTEX) , base+offset );
 
-					// 法線配列を設定
+					// Set the normal array
 					offset = (int)((char *)mat->vertex_p[0].normal-(char *)mat->vertex_p[0].point);
 					glNormalPointer( GL_FLOAT, sizeof(VERTEX_NOTEX) , base+offset );
 
-					// 色設定
+					// Color setting
 					glColor4f(mat->color[0],mat->color[1],mat->color[2],mat->color[3]);
 				//	offset = (int)((char *)mat->vertex_p[0].color-(char *)mat->vertex_p[0].point);
 				//	glColorPointer(4,GL_FLOAT,sizeof(VERTEX_NOTEX),base+offset);
 
-					// 描画実行
+					// Execution drawing
 					glDrawArrays( GL_TRIANGLES, 0, mat->datanum );
 
 					if( isGL_BLEND == GL_FALSE ) glDisable(GL_BLEND);
-					if ( g_isVBOSupported ) {						// 頂点バッファ使用
-						glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// 頂点バッファをデフォルトへ
+					if ( g_isVBOSupported ) {						// Vertex buffer usage
+						glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0 );	// The vertex buffer to the default
 					}
 
 				//	glDisableClientState( GL_COLOR_ARRAY );
@@ -933,23 +916,23 @@ void mqoCallListObject(MQO_OBJECT mqoobj[],int num)
 			}
 		}
 
-		//メタセコは頂点の並びが表面からみて右回り（元の設定にもどす）
+		//Metaseko is right around in a sequence of vertices are viewed from the surface (back to the original setting)
 		glFrontFace(intFrontFace);
 	glPopMatrix();
 }
 
 
 /*=========================================================================
-【関数】mqoGetDirectory
-【用途】ファイル名を含むパス文字列からディレクトリのパスのみを抽出する
-【引数】
-		*path_file	ファイル名を含むパス文字列（入力）
-		*path_dir	ファイル名を除いたパス文字列（出力）
+[Function] mqoGetDirectory
+To extract only the directory path from a string that contains the [Applications] file name
+[Argument]
+* path_file path string that contains the file name (input)
+* path_dir file name path string except the (output)
 
-【戻値】なし
-【仕様】例：
-		"C:/data/file.bmp" → "C:/data/"
-		"data/file.mqo"    → "data/"
+[Return value] None
+[Specification] Example:
+"C: /data/file.bmp" → "C: / data /"
+"data / file.mqo" → "data /"
 =========================================================================*/
 
 void mqoGetDirectory(const char *path_file, char *path_dir)
@@ -965,18 +948,18 @@ void mqoGetDirectory(const char *path_file, char *path_dir)
 
 
 /*=========================================================================
-【関数】mqoSnormal
-【用途】法線ベクトルを求める
-【引数】
-		A		3次元座標上の点A
-		B		3次元座標上の点B
-		C		3次元座標上の点C
-		*normal	ベクトルBAとベクトルBCの法線ベクトル（右ねじ方向）
+[Function] mqoSnormal
+Ask the [Applications] Normal vector
+[Argument]
+A point on the A 3-dimensional coordinates
+Point B on the B 3-dimensional coordinates
+Point C on C 3-dimensional coordinate
+* normal vector BA and vector BC Normal vector (right screw direction)
 
-【戻値】なし
-【仕様】メタセコイアにおいて面を構成する頂点の番号は，表示面から見て
-		時計回りに記述してある．つまり，頂点A,B,C があったとき，
-		求めるべき法線はBAとBCの外積によって求められる
+[Return value] None
+[Specification] number of vertices that make up the surface in Metasequoia, when viewed from the display surface
+It has described in a clockwise direction. That is, when the vertices A, B, C were found
+It is is normal to be obtained determined by the cross product of BA and BC
 =========================================================================*/
 
 void mqoSnormal(glPOINT3f A, glPOINT3f B, glPOINT3f C, glPOINT3f *normal)
@@ -984,22 +967,22 @@ void mqoSnormal(glPOINT3f A, glPOINT3f B, glPOINT3f C, glPOINT3f *normal)
 	double norm;
 	glPOINT3f vec0,vec1;
 
-	// ベクトルBA
+	// Vector BA
 	vec0.x = A.x - B.x; 
 	vec0.y = A.y - B.y;
 	vec0.z = A.z - B.z;
 
-	// ベクトルBC
+	// Vector BC
 	vec1.x = C.x - B.x;
 	vec1.y = C.y - B.y;
 	vec1.z = C.z - B.z;
 
-	// 法線ベクトル
+	// Normal vector
 	normal->x = vec0.y * vec1.z - vec0.z * vec1.y;
 	normal->y = vec0.z * vec1.x - vec0.x * vec1.z;
 	normal->z = vec0.x * vec1.y - vec0.y * vec1.x;
 
-	// 正規化
+	// Normalization
 	norm = normal->x * normal->x + normal->y * normal->y + normal->z * normal->z;
 	norm = sqrt ( norm );
 
@@ -1010,14 +993,14 @@ void mqoSnormal(glPOINT3f A, glPOINT3f B, glPOINT3f C, glPOINT3f *normal)
 
 
 /*=========================================================================
-【関数】mqoReadMaterial
-【用途】マテリアル情報の読み込み
-【引数】
-		fp		ファイルポインタ
-		M		マテリアル配列
+[Function] mqoReadMaterial
+Reading of [Applications] material information
+[Argument]
+fp file pointer
+M Materials array
 
-【戻値】なし
-【仕様】mqoCreateModel(), mqoCreateSequence()のサブ関数．
+[Return value] None
+[Specification] mqoCreateModel (), sub-function of mqoCreateSequence ().
 =========================================================================*/
 
 void mqoReadMaterial(FILE *fp, MQO_MATDATA M[])
@@ -1030,42 +1013,42 @@ void mqoReadMaterial(FILE *fp, MQO_MATDATA M[])
 	int			i = 0;
 
 	while (1) {
-		fgets(buf,SIZE_STR,fp);	// 行読み込み
+		fgets(buf,SIZE_STR,fp);	// Line read
 		if (strstr(buf,"}")) break;
 
-		pStr = strstr(buf,"col(");	// 材質名読み飛ばし
+		pStr = strstr(buf,"col(");	// Skip Material name
 		sscanf( pStr,
 				"col(%f %f %f %f) dif (%f) amb(%f) emi(%f) spc(%f) power(%f)",
 				&c.r, &c.g, &c.b, &c.a, &dif, &amb, &emi, &spc, &M[i].power );
 
-		// 頂点カラー
+		// Vertex color
 		M[i].col = c;
 
-		// 拡散光
+		// Diffusion light
 		M[i].dif[0] = dif * c.r;
 		M[i].dif[1] = dif * c.g;
 		M[i].dif[2] = dif * c.b;
 		M[i].dif[3] = c.a;
 
-		// 周囲光
+		// Surrounding light
 		M[i].amb[0] = amb * c.r;
 		M[i].amb[1] = amb * c.g;
 		M[i].amb[2] = amb * c.b;
 		M[i].amb[3] = c.a;
 
-		// 自己照明
+		// Self-lighting
 		M[i].emi[0] = emi * c.r;
 		M[i].emi[1] = emi * c.g;
 		M[i].emi[2] = emi * c.b;
 		M[i].emi[3] = c.a;
 
-		// 反射光
+		// Reflected light
 		M[i].spc[0] = spc * c.r;
 		M[i].spc[1] = spc * c.g;
 		M[i].spc[2] = spc * c.b;
 		M[i].spc[3] = c.a;
 		
-		// tex：模様マッピング名
+		// tex: pattern mapping name
 		if ( (pStr = strstr(buf,"tex(")) != NULL ) {
 			M[i].useTex = TRUE;
 
@@ -1096,14 +1079,14 @@ void mqoReadMaterial(FILE *fp, MQO_MATDATA M[])
 
 
 /*=========================================================================
-【関数】mqoReadVertex
-【用途】頂点情報の読み込み
-【引数】
-		fp		現在オープンしているメタセコイアファイルのファイルポインタ
-		V		頂点を格納する配列
-		
-【戻値】なし
-【仕様】mqoReadObject()のサブ関数
+[Function] mqoReadVertex
+[Applications] reading of vertex information
+[Argument]
+fp File pointer of currently open Metasequoia file
+Array to store the V vertex
+
+[Return value] None
+[Specification] sub function of mqoReadObject ()
 =========================================================================*/
 
 void mqoReadVertex(FILE *fp, glPOINT3f V[])
@@ -1121,14 +1104,14 @@ void mqoReadVertex(FILE *fp, glPOINT3f V[])
 
 
 /*=========================================================================
-【関数】mqoReadBVertex
-【用途】バイナリ形式の頂点情報を読み込む
-【引数】
-		fp		現在オープンしているメタセコイアファイルのファイルポインタ
-		V		頂点を格納する配列
+[Function] mqoReadBVertex
+To read the vertex information of [Applications] binary format
+[Argument]
+fp File pointer of currently open Metasequoia file
+Array to store the V vertex
 
-【戻値】頂点数
-【仕様】mqoReadObject()のサブ関数
+[Return value] Vertex
+[Specification] sub function of mqoReadObject ()
 =========================================================================*/
 
 int mqoReadBVertex(FILE *fp, glPOINT3f V[])
@@ -1141,12 +1124,12 @@ int mqoReadBVertex(FILE *fp, glPOINT3f V[])
 
 	fgets(cw,sizeof(cw),fp);
 	if ( (pStr = strstr(cw,"Vector")) != NULL ) {
-		sscanf(pStr,"Vector %d [%d]",&n_vertex,&size);	// 頂点数、データサイズを読み込む
+		sscanf(pStr,"Vector %d [%d]",&n_vertex,&size);	// Vertex, read the data size
 	}
 	else {
 		return -1;
 	}
-	//MQOファイルのバイナリ頂点データはintel形式（リトルエディアン）
+	//Binary vertex data intel format of MQO files (Little endian)
 	wf = (float *)malloc(size);
 	fread(wf,size,1,fp);
 	for ( i = 0; i < n_vertex; i++ ) {
@@ -1162,7 +1145,7 @@ int mqoReadBVertex(FILE *fp, glPOINT3f V[])
 	}
 	free(wf);
 
-	// "}"まで読み飛ばし
+	// And skip to the "}"
 	{
 		char buf[SIZE_STR];
 		while (1) {
@@ -1176,14 +1159,14 @@ int mqoReadBVertex(FILE *fp, glPOINT3f V[])
 
 
 /*=========================================================================
-【関数】mqoReadFace
-【用途】面情報の読み込み
-【引数】
-		fp		ファイルポインタ
-		F		面配列
-		
-【戻値】なし
-【仕様】mqoReadObject()のサブ関数
+[Function] mqoReadFace
+Reading of [Applications] surface information
+[Argument]
+fp file pointer
+F plane array
+
+[Return value] None
+[Specification] sub function of mqoReadObject ()
 =========================================================================*/
 
 void mqoReadFace(FILE *fp, MQO_FACE F[])
@@ -1196,16 +1179,16 @@ void mqoReadFace(FILE *fp, MQO_FACE F[])
 		fgets(buf,SIZE_STR,fp);
 		if (strstr(buf,"}")) break;
 
-		// 面を構成する頂点数
+		// Vertex that make up the surface
 		sscanf(buf,"%d",&F[i].n);
 
-		// 頂点(V)の読み込み
+		// Reading of the vertex (V)
 		if ( (pStr = strstr(buf,"V(")) != NULL ) {
 			switch (F[i].n) {
 				case 3:
-//メタセコは頂点の並びが表面からみて右回り
-//読み込み時に並べ替える方法もある。けど、表面の設定を
-//glFrontFaceで変えるほうがスマート？
+// Metaseko is right around the sequence of vertices is viewed from the surface
+// There is also a method to sort at the time of reading. But, the setting of the surface
+// better to change in glFrontFace is smart?
 					sscanf(pStr,"V(%d %d %d)",&F[i].v[0],&F[i].v[1],&F[i].v[2]);
 //					sscanf(pStr,"V(%d %d %d)",&F[i].v[2],&F[i].v[1],&F[i].v[0]);
 					break;
@@ -1218,19 +1201,19 @@ void mqoReadFace(FILE *fp, MQO_FACE F[])
 			}		
 		}
 
-		// マテリアル(M)の読み込み
+		// Reading of the material (M)
 		F[i].m = 0;
 		if ( (pStr = strstr(buf,"M(")) != NULL ) {
 			sscanf(pStr,"M(%d)",&F[i].m);
 		}
-		else { // マテリアルが設定されていない面
+		else { // Surface material has not been set
 			F[i].m = -1;
 		}
 
-		// UVマップ(UV)の読み込み
+		// Reading of UV map (UV)
 		if ( (pStr = strstr(buf,"UV(")) != NULL ) {
 			switch (F[i].n) {
-				case 3:	// 頂点数3
+				case 3:	// Vertex3
 					sscanf(pStr,"UV(%f %f %f %f %f %f)",
 									&F[i].uv[0].x, &F[i].uv[0].y,
 									&F[i].uv[1].x, &F[i].uv[1].y,
@@ -1238,7 +1221,7 @@ void mqoReadFace(FILE *fp, MQO_FACE F[])
 									);
 					break;
 
-				case 4:	// 頂点数4
+				case 4:	// Vertex4
 					sscanf(pStr,"UV(%f %f %f %f %f %f %f %f)",
 									&F[i].uv[0].x, &F[i].uv[0].y,
 									&F[i].uv[1].x, &F[i].uv[1].y,
@@ -1258,14 +1241,14 @@ void mqoReadFace(FILE *fp, MQO_FACE F[])
 
 
 /*=========================================================================
-【関数】mqoReadObject
-【用途】オブジェクト情報の読み込み
-【引数】
-		fp		ファイルポインタ
-		obj		オブジェクト情報
+[Function] mqoReadObject
+[Applications] reading of object information
+[Argument]
+fp file pointer
+obj object information
 
-【戻値】なし
-【仕様】この関数で１個のオブジェクト情報が読み込まれる．
+[Return value] None
+[Specification] one of the object information in this function is read.
 =========================================================================*/
 
 void mqoReadObject(FILE *fp, MQO_OBJDATA *obj)
@@ -1317,25 +1300,25 @@ void mqoReadObject(FILE *fp, MQO_OBJDATA *obj)
 
 
 /*=========================================================================
-【関数】mqoMakeArray
-【用途】頂点配列の作成
-【引数】
-		mat		マテリアル（この中に頂点データを含む）
-		matpos	材質番号
-		F		面
-		fnum	面数
-		V		頂点
-		N		法線
-		facet	スムージング角
-		mcol	色
-		scale	スケール
-		alpha	アルファ
+[Function] mqoMakeArray
+Creation of the [Applications] vertex array
+[Argument]
+mat material (it includes the vertex data in this)
+matpos material number
+F surface
+fnum surface number
+V vertex
+N normal
+facet smoothing angle
+mcol color
+scale scale
+alpha alpha
 
-【戻値】なし
-【仕様】頂点配列はすべて三角にするので、四角は三角ｘ２に分割
-		  0  3      0    0  3
-		   □   →　△　　▽
-		  1  2     1  2   2  
+[Return value] None
+[Specification] Since all vertex array to triangle, square divided into triangular x2
+0 3 0 0 3
+□ → △ ▽
+1 2 1 2 2
 =========================================================================*/
 
 void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT3f V[],
@@ -1345,7 +1328,7 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 	int i;
 	int dpos;
 	double s;
-	glPOINT3f normal;	// 法線ベクトル
+	glPOINT3f normal;	// Normal vector
 	
 	dpos = 0;
 	mat->color[0] = mcol->r;
@@ -1356,7 +1339,7 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 		for ( f = 0; f < fnum; f++ ){
 			if ( F[f].m != matpos ) continue;
 			if ( F[f].n == 3 ) {
-				mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&normal);	// 法線ベクトルを計算
+				mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&normal);	// To calculate the normal vector
 				for ( i = 0; i < 3; i++ ) {
 					mat->vertex_t[dpos].point[0] = V[F[f].v[i]].x*scale;
 					mat->vertex_t[dpos].point[1] = V[F[f].v[i]].y*scale;
@@ -1365,7 +1348,7 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 					mat->vertex_t[dpos].uv[1] = F[f].uv[i].y;
 					s = acos(normal.x*N[F[f].v[i]].x + normal.y*N[F[f].v[i]].y + normal.z*N[F[f].v[i]].z);
 					if ( facet < s ) {
-						// スムージング角　＜（頂点法線と面法線の角度）のときは面法線を頂点法線とする
+						// I and vertex normal the surface normal when smoothing angle <of (the angle of the vertex normal and the surface normal)
 						mat->vertex_t[dpos].normal[0] = normal.x;
 						mat->vertex_t[dpos].normal[1] = normal.y;
 						mat->vertex_t[dpos].normal[2] = normal.z;
@@ -1378,9 +1361,9 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 					dpos++;
 				}
 			}
-			//４頂点（四角）は３頂点（三角）ｘ２に分割
+			//4 vertex (squares) divided into three vertex (triangle) x2
 			if ( F[f].n == 4 ) {
-				mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&normal);	// 法線ベクトルを計算
+				mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&normal);	// To calculate the normal vector
 				for ( i = 0; i < 4; i++ ) {
 					if ( i == 3 ) continue;
 					mat->vertex_t[dpos].point[0] = V[F[f].v[i]].x*scale;
@@ -1401,7 +1384,7 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 					}
 					dpos++;
 				}
-				mqoSnormal(V[F[f].v[0]],V[F[f].v[2]],V[F[f].v[3]],&normal);	// 法線ベクトルを計算
+				mqoSnormal(V[F[f].v[0]],V[F[f].v[2]],V[F[f].v[3]],&normal);	// To calculate the normal vector
 				for ( i = 0; i < 4; i++ ) {
 					if ( i == 1 ) continue;
 					mat->vertex_t[dpos].point[0] = V[F[f].v[i]].x*scale;
@@ -1432,7 +1415,7 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 		for ( f = 0; f < fnum; f++ ){
 			if ( F[f].m != matpos ) continue;
 			if ( F[f].n == 3 ) {
-				mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&normal);		// 法線ベクトルを計算
+				mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&normal);		// To calculate the normal vector
 				for ( i = 0; i < 3; i++ ) {
 					mat->vertex_p[dpos].point[0] = V[F[f].v[i]].x*scale;
 					mat->vertex_p[dpos].point[1] = V[F[f].v[i]].y*scale;
@@ -1454,9 +1437,9 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 					dpos++;
 				}
 			}
-			//４頂点（四角）は３頂点（三角）ｘ２に分割
+			//4 vertex (squares) divided into three vertex (triangle) x2
 			if ( F[f].n == 4 ) {
-				mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&normal);		// 法線ベクトルを計算
+				mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&normal);		// To calculate the normal vector
 				for ( i = 0; i < 4; i++ ) {
 					if ( i == 3 ) continue;
 					mat->vertex_p[dpos].point[0] = V[F[f].v[i]].x*scale;
@@ -1478,7 +1461,7 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 					}
 					dpos++;
 				}
-				mqoSnormal(V[F[f].v[0]],V[F[f].v[2]],V[F[f].v[3]],&normal);		// 法線ベクトルを計算
+				mqoSnormal(V[F[f].v[0]],V[F[f].v[2]],V[F[f].v[3]],&normal);		// To calculate the normal vector
 				for ( i = 0; i < 4; i++ ) {
 					if ( i == 1 ) continue;
 					mat->vertex_p[dpos].point[0] = V[F[f].v[i]].x*scale;
@@ -1507,14 +1490,14 @@ void mqoMakeArray( MQO_MATERIAL *mat, int matpos, MQO_FACE F[], int fnum,glPOINT
 
 
 /*=========================================================================
-【関数】mqoVertexNormal
-【用途】頂点法線の計算
-【引数】
-		obj			オブジェクト情報
+[Function] mqoVertexNormal
+[Applications] calculation of vertex normals
+[Argument]
+obj object information
 
-【戻値】法線配列
-【仕様】４頂点の面は三角形に分割して計算
-		戻り値は必ず呼び出し元で解放（free）すること！
+[Return value] normal array
+[Specification] 4 vertex of the surface is calculated by dividing the triangle
+The return value is always released by the caller (free) that!
 =========================================================================*/
 
 glPOINT3f * mqoVertexNormal(MQO_OBJDATA *obj)
@@ -1523,14 +1506,14 @@ glPOINT3f * mqoVertexNormal(MQO_OBJDATA *obj)
 	int v;
 	int i;
 	double len;
-	glPOINT3f fnormal;	// 面法線ベクトル
+	glPOINT3f fnormal;	// Surface normal vector
 	MQO_FACE *F;
 	glPOINT3f *V;
 	glPOINT3f *ret;
 	F = obj->F;
 	V = obj->V;
 	ret = (glPOINT3f *)calloc(obj->n_vertex,sizeof(glPOINT3f));
-	//面の法線を頂点に足し込み
+	//The summation of the normal line of the surface to the apex
 	for ( f = 0; f < obj->n_face; f++ ) {
 		if ( obj->F[f].n == 3 ) {
 			mqoSnormal(V[F[f].v[0]],V[F[f].v[1]],V[F[f].v[2]],&fnormal);
@@ -1557,10 +1540,10 @@ glPOINT3f * mqoVertexNormal(MQO_OBJDATA *obj)
 			}
 		}
 	}
-	//正規化
+	//Normalization
 	for ( v = 0; v < obj->n_vertex; v++ ) {
 		if ( ret[v].x == 0 && ret[v].y == 0 && ret[v].z == 0 ) {
-			//面に使われてない点
+			//That it is not used in the surface
 			continue;
 		}
 		len = sqrt(ret[v].x*ret[v].x + ret[v].y*ret[v].y + ret[v].z*ret[v].z);
@@ -1575,18 +1558,18 @@ glPOINT3f * mqoVertexNormal(MQO_OBJDATA *obj)
 }
 
 /*=========================================================================
-【関数】mqoMakePolygon
-【用途】ポリゴンの生成
-【引数】
-		readObj		読み込んだオブジェクト情報
-		mqoobj		MQOオブジェクト 
-		N[]			法線配列
-		M[]			マテリアル配列
-		n_mat		マテリアル数
-		scale		スケール
-		alpha		アルファ
+[Function] mqoMakePolygon
+[Applications] polygon generation of
+[Argument]
+readObj the loaded object information
+mqoobj MQO object
+N [] normal array
+M [] Materials array
+n_mat number of material
+scale scale
+alpha alpha
 
-【戻値】なし
+[Return value] None
 =========================================================================*/
 
 void mqoMakePolygon(MQO_OBJDATA *readObj, MQO_OBJECT *mqoobj,
@@ -1613,31 +1596,31 @@ void mqoMakePolygon(MQO_OBJDATA *readObj, MQO_OBJECT *mqoobj,
 	V = readObj->V;
 	facet = readObj->facet;
 
-	// faceの中でのマテリアル毎の頂点の数
-	// M=NULLのとき、F[].m = 0 が入ってくる
+	// The number of vertices of each Material in the face
+	// When M = NULL, F []. M = 0 is incoming
 	if ( M == NULL ) n_mat = 1;
 
 	mat_vnum = (int *)malloc(sizeof(int)*n_mat);
 	memset(mat_vnum,0,sizeof(int)*n_mat);
 
 	for ( f = 0; f < fnum; f++ ){
-		if( F[f].m < 0 ) continue; // マテリアルが設定されていない面
+		if( F[f].m < 0 ) continue; // Surface material has not been set
 		if ( F[f].n == 3 ) {
 			mat_vnum[F[f].m] += 3;
 		}
 		if ( F[f].n == 4 ) {
-			//４頂点（四角）は３頂点（三角）ｘ２に分割
-			//  0  3      0    0  3
-			//   □   →　△　　▽
-			//  1  2     1  2   2
-			// ４頂点の平面データは
-			// ３頂点の平面データｘ２個
+// 4 vertex (squares) divided into three vertex (triangle) x2
+// 0 3 0 0 3
+// □ → △ ▽
+// 1 2 1 2 2
+// 4 vertices of the plane data
+// 3 plane data x2 vertices
 			mat_vnum[F[f].m] += 3*2;
 		}
 		if ( setObj->matnum < F[f].m+1 ) setObj->matnum = F[f].m+1;
 	}
 
-	// マテリアル別に頂点配列を作成する
+	// You want to create a material different to the vertex array
 	setObj->mat = (MQO_MATERIAL *)malloc(sizeof(MQO_MATERIAL)*setObj->matnum);
 	memset(setObj->mat,0,sizeof(MQO_MATERIAL)*setObj->matnum);
 
@@ -1687,7 +1670,7 @@ void mqoMakePolygon(MQO_OBJDATA *readObj, MQO_OBJECT *mqoobj,
 	}
 	mqoobj->objnum++;
 	if ( MAX_OBJECT <= mqoobj->objnum ) {
-		printf("MQOファイル読み込み：　最大オブジェクト数を超えました[%d]\n",mqoobj->objnum);
+		printf("MQO file read: have exceeded the maximum number of objects [% d]\n",mqoobj->objnum);
 		mqoobj->objnum = MAX_OBJECT-1;
 	}
 
@@ -1697,18 +1680,18 @@ void mqoMakePolygon(MQO_OBJDATA *readObj, MQO_OBJECT *mqoobj,
 
 
 /*=========================================================================
-【関数】mqoMakeObjectsEx
-【用途】オブジェクトのデータからポリゴンモデルを作成する
-【引数】
-		mqoobj	MQOオブジェクト
-		obj		オブジェクト配列
-		n_obj	オブジェクトの個数
-		M		マテリアル配列
-		n_mat	マテリアルの個数
-		scale	拡大率
-		alpha	アルファ
+[Function] mqoMakeObjectsEx
+To create a polygon model from [Applications] object of data
+[Argument]
+mqoobj MQO object
+obj object array
+The number of n_obj object
+M Materials array
+n_mat number of material
+scale enlargement factor
+alpha alpha
 
-【戻値】なし
+[Return value] None
 =========================================================================*/
 
 void mqoMakeObjectsEx( MQO_OBJECT *mqoobj, MQO_OBJDATA obj[], int n_obj, MQO_MATDATA M[],int n_mat,
@@ -1731,13 +1714,13 @@ void mqoMakeObjectsEx( MQO_OBJECT *mqoobj, MQO_OBJDATA obj[], int n_obj, MQO_MAT
 
 
 /*=========================================================================
-【関数】mqoCreateModel
-【用途】MQOファイルからMQOモデルを作成する
-【引数】
-		filename	MQOファイル
-		scale		拡大率（1.0でそのまま）
+[Function] mqoCreateModel
+Create a MQO model from [Applications] MQO file
+[Argument]
+filename MQO file
+scale enlargement factor (as in 1.0)
 
-【戻値】MQO_MODEL（MQOモデル）
+[Return value] MQO_MODEL (MQO model)
 =========================================================================*/
 
 MQO_MODEL mqoCreateModel(char *filename, double scale)
@@ -1753,18 +1736,18 @@ MQO_MODEL mqoCreateModel(char *filename, double scale)
 
 
 /*=========================================================================
-【関数】mqoCreateSequenceEx
-【用途】連番のMQOファイルからMQOシーケンスを作成する
-【引数】
-		format		ファイル名の書式
-		n_file		ファイル数
-		scale		拡大率（1.0でそのまま）
-		fade_inout	0:そのまま　正：フェードイン　負：フェードアウト
-					絶対値は効果をかけるフレーム数
-		alpha		アルファ
+[Function] mqoCreateSequenceEx
+You want to create a MQO sequence from [Applications] serial number MQO file
+[Argument]
+format file name format
+n_file number of files
+scale enlargement factor (as in 1.0)
+fade_inout 0: as it is positive: fade-negative: fade-out
+The number of frames absolute value of applying the effect
+alpha alpha
 
-【戻値】MQO_SEQUENCE（MQOシーケンス）
-【備考】連番は0から開始
+[Return value] MQO_SEQUENCE (MQO sequence)
+[Note] serial number start from 0
 =========================================================================*/
 
 MQO_SEQUENCE mqoCreateSequenceEx(const char *format, int n_file, double scale,
@@ -1820,15 +1803,15 @@ MQO_SEQUENCE mqoCreateSequenceEx(const char *format, int n_file, double scale,
 
 
 /*=========================================================================
-【関数】mqoCreateSequence
-【用途】連番のMQOファイルからMQOシーケンスを作成する
-【引数】
-		format		ファイル名のフォーマット
-		n_file		ファイル数
-		scale		拡大率（1.0でそのまま）
+[Function] mqoCreateSequence
+You want to create a MQO sequence from [Applications] serial number MQO file
+[Argument]
+The format of the format file name
+n_file number of files
+scale enlargement factor (as in 1.0)
 
-【戻値】MQO_SEQUENCE（MQOシーケンス）
-【備考】連番は0から開始
+[Return value] MQO_SEQUENCE (MQO sequence)
+[Note] serial number start from 0
 =========================================================================*/
 
 MQO_SEQUENCE mqoCreateSequence(const char *format, int n_file, double scale)
@@ -1838,12 +1821,12 @@ MQO_SEQUENCE mqoCreateSequence(const char *format, int n_file, double scale)
 
 
 /*=========================================================================
-【関数】mqoCallModel
-【用途】MQOモデルをOpenGLの画面上に呼び出す
-【引数】
-		model		MQOモデル
+[Function] mqoCallModel
+Call the [Applications] MQO model on the screen of the OpenGL
+[Argument]
+model MQO model
 
-【戻値】なし
+[Return value] None
 =========================================================================*/
 
 void mqoCallModel(MQO_MODEL model)
@@ -1853,14 +1836,14 @@ void mqoCallModel(MQO_MODEL model)
 
 
 /*=========================================================================
-【関数】mqoCallSequence
-【用途】MQOシーケンスをOpenGLの画面に呼び出す
-【引数】
-		seq		MQOシーケンス
-		i		フレーム番号
+[Function] mqoCallSequence
+Call [Applications] the MQO sequence in OpenGL screen
+[Argument]
+seq MQO sequence
+i frame number
 
-【戻値】なし
-【仕様】MQOシーケンスの中から指定したフレーム番号のモデルを呼び出す
+[Return value] None
+Call the model of the specified frame number from among the [specification] MQO sequence
 =========================================================================*/
 
 void mqoCallSequence(MQO_SEQUENCE seq, int i)
@@ -1872,14 +1855,14 @@ void mqoCallSequence(MQO_SEQUENCE seq, int i)
 
 
 /*=========================================================================
-【関数】mqoClearObject
-【用途】MQOオブジェクトのクリア
-【引数】
-		object	MQOオブジェクト配列
-		from	削除開始番号（0～）
-		num		削除する個数
+[Function] mqoClearObject
+[Applications] Clear MQO object
+[Argument]
+object MQO object array
+Delete from start number (0 ~)
+the number you want to delete num
 
-【戻値】なし
+[Return value] None
 =========================================================================*/
 
 void mqoClearObject( MQO_OBJECT object[], int from, int num ) 
@@ -1898,11 +1881,11 @@ void mqoClearObject( MQO_OBJECT object[], int from, int num )
 				mat = &obj->mat[m];
 				if ( mat->datanum <= 0 ) continue;
 				if ( g_isVBOSupported ) {
-					// 頂点バッファの削除
+					// Delete the vertex buffer
 					glDeleteBuffersARB( 1, &mat->VBO_id );
 				}
 
-				// 頂点配列の削除
+				// Delete the vertex array
 				if ( mat->isUseTexture ) {
 					if ( mat->vertex_t != NULL ) {
 						free(mat->vertex_t);
@@ -1928,13 +1911,13 @@ void mqoClearObject( MQO_OBJECT object[], int from, int num )
 
 
 /*=========================================================================
-【関数】mqoDeleteObject
-【用途】MQOオブジェクトを削除する
-【引数】
-		object	MQOオブジェクト配列
-		num		削除する個数
+[Function] mqoDeleteObject
+You want to remove the [Applications] MQO object
+[Argument]
+object MQO object array
+the number you want to delete num
 
-【戻値】なし
+[Return value] None
 =========================================================================*/
 
 void mqoDeleteObject(MQO_OBJECT object[], int num)
@@ -1945,14 +1928,14 @@ void mqoDeleteObject(MQO_OBJECT object[], int num)
 
 
 /*=========================================================================
-【関数】mqoDeleteModel
-【用途】MQOモデルを削除する
-【引数】
-		model	MQOモデル
+[Function] mqoDeleteModel
+You want to remove the [Applications] MQO model
+[Argument]
+model MQO model
 
-【戻値】なし
-【備考】削除処理を行った変数を再利用する可能性がある場合は
-		この関数の実行後にNULLを代入しておくこと
+[Return value] None
+[Note] If there is a possibility to re-use a variable that made the removal process
+That it should be assigned a NULL after the execution of this function
 =========================================================================*/
 
 void mqoDeleteModel(MQO_MODEL model)
@@ -1962,13 +1945,13 @@ void mqoDeleteModel(MQO_MODEL model)
 
 
 /*=========================================================================
-【関数】mqoDeleteSequence
-【用途】MQOシーケンスを削除する
-【引数】
-		seq		MQOシーケンス
+[Function] mqoDeleteSequence
+You want to remove the [Applications] MQO sequence
+[Argument]
+seq MQO sequence
 
-【備考】削除処理を行った変数を再利用する可能性がある場合は
-		この関数の実行後にNULLを代入しておくこと
+[Note] If there is a possibility to re-use a variable that made the removal process
+That it should be assigned a NULL after the execution of this function
 =========================================================================*/
 
 void mqoDeleteSequence(MQO_SEQUENCE seq)

@@ -111,20 +111,20 @@ private:
 	void releaseImgVoteMap();
 
 private:
-	std::multimap<int,featureInfo>	feature_KPT_map;	// feature_idをキーにkeypoint_idとimg_idを検索
-	std::map<int,cv::KeyPoint>	keypoint_map;	// keypoint_idをキーにKeyPointを検索
-	std::map<int,imageInfo>	imgInfo_map;	// img_idをキーにfeature_numを検索
-	std::map<int,std::vector<featureVote>*>	imgVote_map;	// img_idをキーにvoteTableを検索
+	std::multimap<int,featureInfo>	feature_KPT_map;	// Search keypoint_id and img_id the feature_id to key
+	std::map<int,cv::KeyPoint>	keypoint_map;	// Search KeyPoint to key keypoint_id
+	std::map<int,imageInfo>	imgInfo_map;	// Search feature_num to key img_id
+	std::map<int,std::vector<featureVote>*>	imgVote_map;	// Search voteTable to key img_id
 
-//	int visual_word_num;	// visual wordの数
-	int imageNum;	// 登録画像枚数
-	int featureNum;	// 登録特徴点数
+//	int visual_word_num;	// The number of visual word
+	int imageNum;	// Registration number of images
+	int featureNum;	// Registered feature points
 	int voteNum;
-	float threshold;	// 特徴点マッチのしきい値(0 - 1)
+	float threshold;	// Feature points match threshold (0 - 1)
 	float geo_threshold;
-	double dist_diff_threshold;	// 対応点の位置に関する許容誤差(画像サイズの比：0 - 1)
-//	double angle_diff_threshold;	// 対応点の角度に関する許容誤差 180度×(0 - 1)
-//	double scale_diff_threshold;	// 対応点のスケールに関する許容誤差 (サイズの比：> 1)
+	double dist_diff_threshold;	// The tolerance on the position of the corresponding point (the ratio of the image size: 0 - 1)
+//	double angle_diff_threshold;	// Tolerance 180 degrees × about the angle of the corresponding point (0 - 1)
+//	double scale_diff_threshold;	// Tolerance on the scale of the corresponding point (the ratio of the size:> 1)
 };
 
 };
