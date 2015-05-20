@@ -116,7 +116,7 @@ bool cameraCalibration::doCalibration()
 	Point3f obj;
 	vector<Point3f> objects;
 	vector<vector<Point3f>> object_points;
-	// 3次元空間座標の設定
+	// 3D set of spatial coordinates
 	for (j = 0; j < pat_row; j++) {
 		for (k = 0; k < pat_col; k++) {
 			obj.x = j * chess_size;
@@ -134,7 +134,7 @@ bool cameraCalibration::doCalibration()
 	vector<Mat>::iterator img_itr = checker_image_list.begin();
 	i = 0;
 	while (img_itr != checker_image_list.end()) {
-		// チェスボード（キャリブレーションパターン）のコーナー検出
+		// Corner detection of chess board (calibration pattern)
 		found = cv::findChessboardCorners(*img_itr, pattern_size, corners);
 
 		cout << i << "...";
@@ -145,7 +145,7 @@ bool cameraCalibration::doCalibration()
 		else {
 			cout << "fail" << endl;
 	    }
-		// コーナー位置をサブピクセル精度に修正，描画
+		// Fixed a corner position in the sub-pixel accuracy, drawing
 		Mat src_gray(img_itr->size(), CV_8UC1, 1);
 		cvtColor(*img_itr, src_gray, CV_BGR2GRAY);
 //		cvCvtColor (src_img[i], src_gray, CV_BGR2GRAY);
@@ -175,7 +175,7 @@ bool cameraCalibration::doCalibration()
 //  cvInitMatHeader (&image_points, ALL_POINTS, 1, CV_32FC2, corners);
 //  cvInitMatHeader (&point_counts, IMAGE_NUM, 1, CV_32SC1, p_count);
 
-	// 内部パラメータ，歪み係数, 外部パラメータの推定
+	// Internal parameters, distortion factor, the estimation of the external parameters
 //  cvCalibrateCamera2 (&object_points, &image_points, &point_counts, cvSize (640, 480), intrinsic, distortion);
 	calibrateCamera(object_points, image_points, checker_image_list[0].size(), camera_matrix, distortion, rotation, translation);
 
@@ -185,7 +185,7 @@ bool cameraCalibration::doCalibration()
   cvGetRows (&object_points, &sub_object_points, base * PAT_SIZE, (base + 1) * PAT_SIZE);
   cvFindExtrinsicCameraParams2 (&sub_object_points, &sub_image_points, intrinsic, distortion, rotation, translation);
   
-  // (7)XMLファイルへの書き出し
+  // (7) Export to XML file
   CvFileStorage *fs;
   fs = cvOpenFileStorage ("camera.xml", 0, CV_STORAGE_WRITE);
   cvWrite (fs, "intrinsic", intrinsic);

@@ -52,29 +52,29 @@ void writeMatBinary(std::ofstream& ofs, const cv::Mat& out_mat);
 */
 void readMatBinary(std::ifstream& ifs, cv::Mat& in_mat);
 
-cv::Mat transPointVecToMat(std::vector<cv::Point2f>& pt_vec, std::vector<unsigned char>& mask);	// Point2f構造体をMat型へ変換
+cv::Mat transPointVecToMat(std::vector<cv::Point2f>& pt_vec, std::vector<unsigned char>& mask);	// Convert Point2f structure to Mat type
 cv::Mat transPointVecToMat(std::vector<cv::Point2f>& pt_vec);
-cv::Mat transPointVecToMatHom(std::vector<cv::Point2f>& pt_vec);	// Point2f構造体を斉次座標にしてMat型へ変換
-cv::Mat transPointVecToMat2D(std::vector<cv::Point2f>& pt_vec, std::vector<unsigned char>& mask);	// Point2f構造体をMat型へ変換
+cv::Mat transPointVecToMatHom(std::vector<cv::Point2f>& pt_vec);	// Convert Point2f structure to Mat type in the homogeneous coordinates
+cv::Mat transPointVecToMat2D(std::vector<cv::Point2f>& pt_vec, std::vector<unsigned char>& mask);	// Convert Point2f structure to Mat type
 cv::Mat transPointVecToMat2D(std::vector<cv::Point2f>& pt_vec);
 std::vector<cv::Point2f> calcAffineTransformRect(cv::Size& regimg_size, cv::Mat& transMat);
 std::vector<cv::Point2f> calcAffineTransformPoints(std::vector<cv::Point2f>& pts_vec, cv::Mat& transMat);
-//int checkPointsDistance(std::vector<cv::Point2f> &src_pts, std::vector<cv::Point2f> &dest_pts, double dist_threshold, std::vector<unsigned char>& status);	// アフィン変換後の2つの点の距離が閾値以上のものはstatusを0にする
-bool checkRectShape(std::vector<cv::Point2f>& rect_pt);	// 射影変換した矩形の形状をチェックする
-cv::Mat createMask(cv::Size img_size, std::vector<cv::Point2f>& pts);	// ptsで指定した4点を囲むマスクを作成する
+//int checkPointsDistance(std::vector<cv::Point2f> &src_pts, std::vector<cv::Point2f> &dest_pts, double dist_threshold, std::vector<unsigned char>& status);	// The distance between two points after the affine transformation is not less than the threshold value a status to 0
+bool checkRectShape(std::vector<cv::Point2f>& rect_pt);	// Check a rectangular shape that projective transformation
+cv::Mat createMask(cv::Size img_size, std::vector<cv::Point2f>& pts);	// Creating a mask surrounding the four points specified in the pts
 int checkInsideArea(std::vector<cv::Point2f>& points, std::vector<cv::Point2f>& corner_pts, std::vector<unsigned char>& status);
-bool checkPtInsideImage(cv::Size img_size, std::vector<cv::Point2f>& pts);	// ptsが画像領域内にあるかの判定
+bool checkPtInsideImage(cv::Size img_size, std::vector<cv::Point2f>& pts);	// judgment pts is there within the image area
 //double erf(double x);	// error function
 
-void resizeMatChannel(cv::Mat& src_mat, cv::Mat& dest_mat, double val = 0);	// src_matのチャネル数をchannelに変換。空いたチャネルにvalを入れる
-template<typename _Tp> void resizeMatChannelType(cv::Mat& src_mat, cv::Mat& dest_mat, double val = 0);	// src_matのチャネル数をchannelに変換。空いたチャネルにvalを入れる
-void setChannelValue(cv::Mat& dest_mat, int channel, double val = 0);	// 指定チャネルの値をvalに設定
-template <typename _Tp> void setChannelValueType(cv::Mat& dest_mat, int channel, double val = 0);	// 指定チャネルの値をvalに設定
+void resizeMatChannel(cv::Mat& src_mat, cv::Mat& dest_mat, double val = 0);	// Convert the number of channels to channel of src_mat. Add the val in the empty channel
+template<typename _Tp> void resizeMatChannelType(cv::Mat& src_mat, cv::Mat& dest_mat, double val = 0);	// Convert the number of channels to channel of src_mat. Add the val in the empty channel
+void setChannelValue(cv::Mat& dest_mat, int channel, double val = 0);	// Set the value of the specified channel to val
+template <typename _Tp> void setChannelValueType(cv::Mat& dest_mat, int channel, double val = 0);	// Set the value of the specified channel to val
 
 std::vector<cv::Point2f> scalePoints(std::vector<cv::Point2f>& point_vec, double scale);
-void decomposeHomography(cv::Mat& H_mat, cv::Mat& camera_matrix, cv::Mat& rotation, cv::Mat& translation);		// ホモグラフィを回転行列と並進行列へ変更
+void decomposeHomography(cv::Mat& H_mat, cv::Mat& camera_matrix, cv::Mat& rotation, cv::Mat& translation);		// Change homography to the rotation matrix and translation matrix
 template<typename _Tp> void decomposeHomographyType(cv::Mat& H_mat, cv::Mat& camera_matrix, cv::Mat& rotation, cv::Mat& translation);
-void decomposeHomography(cv::Mat& H_mat, cv::Mat& camera_matrix, cv::Mat& rotation, cv::Mat& translation, cv::Point2f marker_center);		// ホモグラフィを回転行列と並進行列へ変更
+void decomposeHomography(cv::Mat& H_mat, cv::Mat& camera_matrix, cv::Mat& rotation, cv::Mat& translation, cv::Point2f marker_center);		// Change homography to the rotation matrix and translation matrix
 template<typename _Tp> void decomposeHomographyType(cv::Mat& H_mat, cv::Mat& camera_matrix, cv::Mat& rotation, cv::Mat& translation, cv::Point2f marker_center);
 
 };

@@ -70,7 +70,7 @@ void readMatBinary(std::ifstream& ifs, cv::Mat& in_mat)
 }
 
 
-// Point2f構造体vectorをMat型へ変換
+// Convert Point2f structure vector to Mat type
 Mat transPointVecToMat(vector<Point2f>& pt_vec)
 {
 	vector<unsigned char> mask;
@@ -122,7 +122,7 @@ Mat transPointVecToMat(vector<Point2f>& pt_vec, vector<unsigned char>& mask)
 }
 
 
-// Point2f構造体vectorをMat型へ変換
+// Convert Point2f structure vector to Mat type
 Mat transPointVecToMat2D(vector<Point2f>& pt_vec)
 {
 	vector<unsigned char> mask;
@@ -174,7 +174,7 @@ Mat transPointVecToMat2D(vector<Point2f>& pt_vec, vector<unsigned char>& mask)
 	return retMat;
 }
 
-// Point2f構造体vectorを斉次座標にしてMat型へ変換
+// Convert Point2f structure vector to Mat type in the homogeneous coordinates
 Mat transPointVecToMatHom(vector<Point2f>& pt_vec)
 {
 	int size = pt_vec.size();
@@ -453,7 +453,7 @@ int checkInsideArea(vector<Point2f>& points, vector<Point2f>& corner_pts, vector
 }
 
 
-// ptsが全て画像領域内にあるかの判定
+// judgment pts is whether all there within the image area
 bool checkPtInsideImage(Size img_size, vector<Point2f>& pts)
 {
 	vector<Point2f>::iterator itr = pts.begin();
@@ -485,7 +485,7 @@ double erf(double x)
 }
 */
 
-// src_matのチャネル数をdest_matのチャネル数に変換。空いたチャネルにvalを入れる
+// Convert the number of channels of src_mat to the number of channels of dest_mat. Add the val in the empty channel
 void resizeMatChannel(Mat& src_mat, Mat& dest_mat, double val)
 {
 	CV_Assert(src_mat.depth() == dest_mat.depth());
@@ -550,7 +550,7 @@ template<typename _Tp> void resizeMatChannelType(Mat& src_mat, Mat& dest_mat, do
 	}
 }
 
-// 指定チャネルの値をvalに設定
+// Set the value of the specified channel to val
 void setChannelValue(Mat& dest_mat, int channel, double val)
 {
 	int type = dest_mat.depth();
@@ -617,7 +617,7 @@ template<typename _Tp> void decomposeHomographyType(Mat& H_mat, Mat& camera_matr
 		CV_Assert(H_mat.cols == 3 && H_mat.rows == 3 && camera_matrix.cols == 3 && camera_matrix.rows == 3);
 
 		int i,j;
-		Mat Amarker = camera_matrix.clone();	// 世界座標を画像座標の縮尺に変換する行列
+		Mat Amarker = camera_matrix.clone();	// Matrix to convert the world coordinates to the scale of the image coordinates
 		Amarker.at<_Tp>(0,2) = marker_center.x;
 		Amarker.at<_Tp>(1,2) = marker_center.y;
 
@@ -657,8 +657,8 @@ template<typename _Tp> void decomposeHomographyType(Mat& H_mat, Mat& camera_matr
 }
 
 
-// ホモグラフィを回転行列と並進行列へ変更
-// H_mat: ホモグラフィ行列
+// Change homography to the rotation matrix and translation matrix
+// H_mat: homography matrix
 void decomposeHomography(Mat& H_mat, Mat& camera_matrix, Mat& rotation, Mat& translation, Point2f marker_center)
 {
 	try{

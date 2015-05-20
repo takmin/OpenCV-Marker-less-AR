@@ -473,13 +473,13 @@ int main(int argc, char * argv[])
 				int num_frames = 0;
 				ofstream list_f(dir_name + "\\imglist.txt"); 
 				do {
-					// カメラから画像をキャプチャ
+					// Capture images from the camera
 					capture >> frame;
-					// キャプチャした画像を表示
+					// To display the captured image
 					imshow( windowNameCam, frame );
 					if(counter >= interv){
 						counter = 0;
-						// 保存ファイル名
+						// Save file name
 						std::ostringstream ost;
 						ost << dir_name << "\\" << file_name << "_" << num_frames << ".png";
 						list_f << ost.str() << endl;
@@ -526,7 +526,7 @@ int main(int argc, char * argv[])
 //					ifs.getline(buf,sizeof(buf));
 					cout << id << ":" << buf << "..." << endl;
 
-					// 画像の格納先を定義
+					// Define the storage destination of the image
 					Mat	frame = imread(buf);
 
 					camera_calib.addCheckerImage(frame);

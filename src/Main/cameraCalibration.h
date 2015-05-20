@@ -52,10 +52,10 @@ public:
 	std::vector<cv::Mat>	checker_image_list;
 
 protected:
-	int max_img_num;	/* 画像最大数 */
-	int pat_row;		/* パターンの行数 */
-	int pat_col;		/* パターンの列数 */
-	float chess_size;	/* パターン1マスの1辺サイズ[mm] */
+	int max_img_num;	/* The maximum number of images */
+	int pat_row;		/* Number of rows in the pattern */
+	int pat_col;		/* Number of columns in the pattern */
+	float chess_size;	/* Size of each side pattern 1 Mass [mm] */
 
 public:
 	void setMaxImageNum(int num);
