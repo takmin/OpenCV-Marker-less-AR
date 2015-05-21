@@ -60,22 +60,22 @@ using namespace cvar::or;
 using namespace cvar::tracking;
 using namespace cvar::overlay;
 
-controlOR* ctrlOR = 0;	// 特定物体認識クラス
-trackingOBJ* trckOBJ = 0;	// オブジェクト追跡クラス
-viewModel *viewMDL;	// OpenGL画像表示クラス（シングルトン）
+controlOR* ctrlOR = 0;	// Specific object recognition class
+trackingOBJ* trckOBJ = 0;	// Object tracking class
+viewModel *viewMDL;	// OpenGL image display class (singleton)
 
-VideoCapture capture( 0 );	// カメラキャプチャ
-int seq_id = 0;	// トラッキングのシーケンスID
-int wait_seq_id = 0; // 非トラッキング時のシーケンスID
-bool track_f = false;	// トラッキングフラグ
-int query_scale=1;	// クエリー画像縮小スケール
-int max_query_size = 320;	// 最大クエリー画像サイズ
-Mat query_image;	// 画像認識クエリー用縮小画像サイズ
-//Mat pose_mat_scale;	// ホモグラフィ行列格納用
-string config_file = "config.xml";	// 設定ファイル
+VideoCapture capture( 0 );	// Camera capture
+int seq_id = 0;	// Sequence ID of tracking
+int wait_seq_id = 0; // Sequence ID at the time of non-tracking
+bool track_f = false;	// Tracking flag
+int query_scale=1;	// Query image reduction scale
+int max_query_size = 320;	// Maximum query image size
+Mat query_image;	// Reduced image size for image recognition query
+//Mat pose_mat_scale;	// For homography matrix store
+string config_file = "config.xml";	// Configuration file
 
-//スクリーンサイズのプロパティ
-bool fullscreen = false;	// フルスクリーンモード
+//Properties of the screen size
+bool fullscreen = false;	// Full screen mode
 int screen_pos_x;
 int screen_pos_y;
 int screen_width;
@@ -163,10 +163,10 @@ void setARConfig(Size& frame_size)
 {
 	try{
 		FileStorage cvfs;
-		// Configファイルの読み込み
+		// Reading of Config file
 		cvfs.open(config_file, CV_STORAGE_READ);
 
-		// 入力フレーム用テクスチャサイズ(2の累乗)を計算
+		// It calculates the texture size for the input frame (power of two)
 		int tw = 128;
 		int th = 128;
 		while(frame_size.width > tw){
@@ -177,7 +177,7 @@ void setARConfig(Size& frame_size)
 		}
 		viewMDL->setTwoPowerSize(tw,th);
 
-		// visual wordの読み込み
+		// reading of visual word
 		FileNode fn;
 		fn = cvfs["VisualWord"];
 		std::string vwfile;
@@ -191,13 +191,13 @@ void setARConfig(Size& frame_size)
 			ctrlOR->loadVisualWordsBinary(vwfile, idxfile);
 		}
 
-		// オブジェクトDBの読み込み
+		// Reading of the object DB
 		ctrlOR->loadObjectDB(cvfs["ObjectDB"]);
 
-		// 画像認識クエリー用最大画像サイズの読み込み
+		// Reading of the maximum image size for image recognition query
 		cvfs["max_query_size"] >> max_query_size;
 
-		// クエリー用画像サイズを適切な大きさへ縮小して領域確保
+		// Area secured by reducing the image size for the query to the appropriate size
 		int frame_max_size;
 		if(frame_size.width > frame_size.height){
 			frame_max_size = frame_size.width;
@@ -211,18 +211,18 @@ void setARConfig(Size& frame_size)
 		}
 		query_image.create(frame_size.height/query_scale, frame_size.width/query_scale, CV_8UC1);
 
-		// カメラ内部パラメータの読み込み
+		// Reading of the camera internal parameters
 		Mat camera_matrix;
 		FileStorage fs(cvfs["camera_matrix"], FileStorage::READ);
 		fs["camera_matrix"] >> camera_matrix;
 		viewMDL->init(frame_size, camera_matrix);
 
-		// 焦点距離設定（省略した場合は1.0に設定される）
+		// Focal length setting (which is set to 1.0 if omitted)
 		if(!cvfs["focal_length"].isNone()){
 			viewMDL->setFocalLength(cvfs["focal_length"]);
 		}
 
-		// フルスクリーンモードの読み込み
+		// Read full-screen mode
 		string str_flg;
 		if(cvfs["full_screen_mode"].isNone()){
 			str_flg = "false";
@@ -236,7 +236,7 @@ void setARConfig(Size& frame_size)
 			}
 		}
 
-		// ミラーモードの読み込み
+		// Reading of the mirror mode
 		if(cvfs["mirror_mode"].isNone()){
 			str_flg = "false";
 		}
@@ -250,7 +250,7 @@ void setARConfig(Size& frame_size)
 			viewMDL->setMirrorMode(false);
 		}
 
-		// 重畳表示のためのモデル情報読み込み
+		// Model Information read for superimposed display
 		fn = cvfs["model_info"];
 		FileNode fn2;
 		viewMDL->releaseModel();
@@ -270,7 +270,7 @@ void setARConfig(Size& frame_size)
 			fn_itr++;
 		}
 
-		// 待ち受け時に表示するモデル情報読み込み
+		// Model information read to be displayed during the waiting time
 		fn = cvfs["WaitingModel"];
 		if(!fn.isNone()){
 			int timer = fn["timer"];
@@ -289,30 +289,30 @@ void displayFunc(void)
 {
 #ifndef NO_CAMERA
 	Mat frame;
-	if (capture.isOpened()) { //カメラが存在するとき
-		//キャプチャ
+	if (capture.isOpened()) { // When the camera is present
+		// Capture
 		capture >> frame;
-	} else { //カメラが存在しないとき
-		//特にやることなし
+	} else { // When the camera does not exist
+		// No particularly to do
 	}
 #else
 	frame = imread(imgname);
 #endif
 
 #ifndef NO_OBJRECOG
-	//テクスチャに描画したい画像を投げる
+	// Throw the image you want to draw to the texture
 	Mat grayImg;
 	cvtColor(frame, grayImg, CV_BGR2GRAY);
 
 	if(!track_f){
 		try{
 			cv::resize(grayImg, query_image, query_image.size());
-			vector<resultInfo> recog_result = ctrlOR->queryImage(query_image);	// 縮小画像で認識
-//			vector<resultInfo> recog_result = ctrlOR->queryImage(grayImg);	// カメラからの画像で認識
+			vector<resultInfo> recog_result = ctrlOR->queryImage(query_image);	// Recognized by the reduced image
+//			vector<resultInfo> recog_result = ctrlOR->queryImage(grayImg);	// Recognized in the image from the camera
 			if(!recog_result.empty()){
 				cout << "img id: " << recog_result[0].img_id << endl;
 
-				// 縮小画像用ホモグラフィをカメラ画像用に変換
+				// Convert homography for reduced image for the camera image
 				Mat pose_mat_scale = recog_result[0].pose_mat.clone();
 				pose_mat_scale.row(0) *= query_scale;
 				pose_mat_scale.row(1) *= query_scale;
@@ -354,7 +354,7 @@ void displayFunc(void)
 	viewMDL->drawScene(frame);
 
 
-	////////////////// オブジェクトを描画 //////////////////
+	////////////////// Draw object //////////////////
 //	drawOctahedron();
 #ifndef NO_OVERLAY
 	if(track_f){
@@ -375,7 +375,7 @@ void displayFunc(void)
 	}
 #endif
 
-	// 描画（バッファー入れ替え）
+	// Drawing (buffer swapping)
 //	glFlush();
 
 	glutSwapBuffers();
@@ -383,15 +383,15 @@ void displayFunc(void)
 }
 
 
-// アイドル時のコールバック
+// Callback when idle
 void idleFunc()
 {
-	//再描画要求
+	// Repaint request
 	glutPostRedisplay();
 }
 
 
-// ウインドウリサイズのコールバック
+// Of window resize callback
 void resizeFunc(int w, int h) {
 	viewMDL->resize(w,h);
 }
@@ -415,12 +415,12 @@ void fullScreenChange()
 }
 
 
-// キーボード入力コールバック
+// Keyboard input callback
 void keyboardFunc(unsigned char key, int x, int y) {
 	switch (key) {
   case 'q':
   case 'Q':
-  case '\033':  // '\033' は ESC の ASCII コード
+  case '\033':  // '\033' ASCII code of ESC is
 	  exit(0);
 	  break;
   case 'f':
@@ -433,7 +433,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
 }
 
 
-// 終了関数
+// Exit function
 void myExit()
 {
 	viewMDL->exitFunc();
@@ -450,14 +450,14 @@ void setControlOR(controlOR& ctrlOR_cls)
 
 int startGUI(int argc, char *argv[])
 {
-	// viewModelの取得
+	// acquisition of viewModel
 	viewMDL = viewModel::getInstance();
 
-	// 終了処理の定義
+	// The definition of the end processing
 	atexit(myExit);
 
 #ifndef NO_CAMERA
-	// カメラ初期化
+	// Camera initialization
 	if( !capture.isOpened() ) {
 		std::cout << "Failed to Open Camera" << std::endl;
 		return -1;

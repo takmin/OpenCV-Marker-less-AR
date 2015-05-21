@@ -67,20 +67,20 @@ public:
 	int size_fix_mode;
 	int fixed_size;
 
-	int morph_interval;		// フレーム間切り替えインターバル（フレーム数）
-	int spread_interval;	// 画像拡大切替インターバル（フレーム数）
+	int morph_interval;		// Inter-frame switching interval (the number of frames)
+	int spread_interval;	// Image enlargement switching interval (the number of frames)
 
 protected:
-	int slide_status;	// 現在の表示ステータス
-	static const int SLIDE_INIT = 0x00;	// １番目のスライドの透過処理
-	static const int SLIDE_ALPHA = 0x01;	// ２番目以降のスライドの透過処理
-	static const int SLIDE_NORM = 0x02;	// 通常のスライド重畳表示
-	static const int SLIDE_PRESPREAD = 0x04;	// スライド拡大処理前の透過処理
-	static const int SLIDE_SPREADING = 0x08;	// 拡大処理
-	static const int SLIDE_LARGEALPHA = 0x0f;	// 拡大スライドの透過処理
-	static const int SLIDE_LARGE = 0x10;	// 拡大表示
-	static const int SLIDE_NORMLAST = 0x20;	// 最終スライド（重畳表示）
-	static const int SLIDE_LARGELAST = 0x40;	// 最終スライド(拡大表示)
+	int slide_status;	// The current display status
+	static const int SLIDE_INIT = 0x00;	// Transparent processing of the first slide
+	static const int SLIDE_ALPHA = 0x01;	// Transparent processing of the second and subsequent slide
+	static const int SLIDE_NORM = 0x02;	// Normal slide superimposed display
+	static const int SLIDE_PRESPREAD = 0x04;	// Slide enlargement process before the transmission processing
+	static const int SLIDE_SPREADING = 0x08;	// Enlargement process
+	static const int SLIDE_LARGEALPHA = 0x0f;	// Transparent processing of expansion slide
+	static const int SLIDE_LARGE = 0x10;	// View larger image
+	static const int SLIDE_NORMLAST = 0x20;	// The final slide (superimposed display)
+	static const int SLIDE_LARGELAST = 0x40;	// The final slide (view larger)
 	std::vector<SLIDE_INFO*>	slide_vec;
 	std::vector<SLIDE_INFO*>	spread_slide_vec;
 	std::vector<SLIDE_INFO*>::iterator	slide_itr;
@@ -98,7 +98,7 @@ protected:
 	double fore_dist;
 
 public:
-	// modelObjectメソッドのオーバーライド
+	// Overriding modelObject method
 	void init();
 	void loadModelFile(std::string filename);
 	void drawModel(int& frame_id);

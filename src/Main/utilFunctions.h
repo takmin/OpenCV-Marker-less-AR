@@ -37,13 +37,13 @@
 
 namespace cvar{
 
-// デバッグ用関数群
+// Debugging functions
 CvMat* loadCsvFileAsMatrix(char* filename, int cv_type);
 void createMatchingImage(cv::Mat& src_img, cv::Mat& dest_img, std::vector<cv::Point>& src_pts, std::vector<cv::Point>& dest_pts);
 void createMatchingImage(cv::Mat& src_img, cv::Mat& dest_img, std::vector<cv::Point2f>& src_pts, std::vector<cv::Point2f>& dest_pts);
-void truncatePoint(cv::Size& size, cv::Point2f& pt);	// 指定サイズをはみ出る点をサイズ内近傍点に近似
-void drawLineContour(cv::Mat& src_img, std::vector<cv::Point2f>& points, cv::Scalar& color, int thickness=1, int lineType=8, int shift=0);	// ４点をつなぐ直線を描画
-void drawPoints(cv::Mat& src_img, std::vector<cv::Point2f>& points, std::vector<unsigned char>& mask_vec, cv::Scalar& color, int thickness=1, int lineType=8, int shift=0);	// ４点をつなぐ直線を描画
+void truncatePoint(cv::Size& size, cv::Point2f& pt);	// To approximate the point that protrude a specified size to the size in the vicinity of point
+void drawLineContour(cv::Mat& src_img, std::vector<cv::Point2f>& points, cv::Scalar& color, int thickness=1, int lineType=8, int shift=0);	// Draw a straight line connecting the four points
+void drawPoints(cv::Mat& src_img, std::vector<cv::Point2f>& points, std::vector<unsigned char>& mask_vec, cv::Scalar& color, int thickness=1, int lineType=8, int shift=0);	// Draw a straight line connecting the four points
 
 };
 

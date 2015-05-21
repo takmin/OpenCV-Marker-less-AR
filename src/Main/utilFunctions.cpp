@@ -38,7 +38,7 @@ using namespace cv;
 
 namespace cvar{
 
-// CSVファイルから行列を作成する
+// You want to create a matrix from a CSV file
 CvMat* loadCsvFileAsMatrix(char* filename, int cv_type)
 {
 	FILE* fp;
@@ -165,7 +165,7 @@ void createMatchingImage(Mat& src_img, Mat& dest_img, vector<Point>& src_pts, ve
 }
 
 
-// 指定サイズをはみ出る点をサイズ内近傍点に近似
+// To approximate the point that protrude a specified size to the size in the vicinity of point
 void truncatePoint(cv::Size& size, cv::Point2f& pt)
 {
 	if(pt.x < 0)
@@ -179,7 +179,7 @@ void truncatePoint(cv::Size& size, cv::Point2f& pt)
 }
 
 
-// ４点をつなぐ直線を描画
+// Draw a straight line connecting the four points
 void drawLineContour(Mat& src_img, vector<Point2f>& points, Scalar& color, int thickness, int lineType, int shift)
 {
 	int pt_num = points.size();

@@ -35,19 +35,19 @@
 
 #include <opencv2/core/core.hpp>
 #include "modelObjectFactory.h"
-//#include "GLMetaseq.h"	// モデルローダ
+//#include "GLMetaseq.h"	// Model loader
 
 namespace cvar{
 namespace overlay{
 
 typedef struct{
-	modelObject* model;	// モデルクラス
-	double scale;	// モデルのサイズを指定
-	std::string modelFilename;	// モデルファイルへのパス
-	cv::Mat initRot;	// 初期位置への3×3回転行列（マーカーはZ=0のX-Y平面で、Zが+方向が上、Yが+方向が奥行き）
-	cv::Mat initTrans;	// 初期位置への移動成分
-	cv::Point2f	markerCenter;	// マーカー中心位置
-	cv::Size markerSize;	// マーカーサイズ
+	modelObject* model;	// Model class
+	double scale;	// It specifies the size of the model
+	std::string modelFilename;	// The path to the model file
+	cv::Mat initRot;	// 3 × 3 rotation matrix to the initial position (in the XY plane of markers Z = 0, Z is + direction is up, Y is + direction of depth)
+	cv::Mat initTrans;	// Movement component to the initial position
+	cv::Point2f	markerCenter;	// Marker center position
+	cv::Size markerSize;	// Marker Size
 }MODEL_INFO;
 
 class viewModel
@@ -79,8 +79,8 @@ public:
 public:
 	cv::Mat	resized_frame;
 
-	int two_power_width;	// 2の累乗に合わせるためのリサイズ先サイズ
-	int two_power_height;	// 512か1024あたりが適当
+	int two_power_width;	// Resize destination size to match the power of two
+	int two_power_height;	// 512 or appropriate per 1024
 
 	int window_width;
 	int window_height;
@@ -89,11 +89,11 @@ public:
 	int capture_height;
 
 	GLuint texture[1];
-//	MQO_MODEL g_mqoModel;	// MQOモデル
-	double aspect_rate;			// キャプチャの縦横比
-	float focal_length;		// 焦点距離
+//	MQO_MODEL g_mqoModel;	// MQO model
+	double aspect_rate;			// Aspect ratio of capture
+	float focal_length;		// Focal length
 
-	cv::Mat cameraMatrix;	// カメラパラメータ行列
+	cv::Mat cameraMatrix;	// Camera parameter matrix
 
 //	double model_scale;
 	std::map<int,MODEL_INFO>	model_map;
@@ -113,8 +113,8 @@ protected:
 public:
 	bool init(cv::Size& frame_size, cv::Mat& cameraMat);
 	bool init(cv::Size& frame_size, cv::Mat& cameraMat, int type);
-	void resize(int win_w, int win_h);	// ウィンドウサイズ変更関数
-	void updateTexture(cv::Mat& frame);	// 更新関数
+	void resize(int win_w, int win_h);	// Window size change function
+	void updateTexture(cv::Mat& frame);	// Update function
 	void release();
 	void exitFunc();
 
